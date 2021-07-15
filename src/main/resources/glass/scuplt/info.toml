@@ -1,5 +1,11 @@
 id = "sculpt"
 version = "0.1.0"
 
+implementations = [
+    "1.7.10",
+    "1.8.9",
+    "1.17"
+]
+
 [dependencies]
 client = "*"

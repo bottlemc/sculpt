@@ -1,2 +1,7 @@
+[listeners]
+initialize = [
+    "com.github.glassmc.sculpt.client.v1_8_9.SculptInitializeListener"
+]
+
 [dependencies]
 client = "1.8.9"
