@@ -7,5 +7,10 @@ implementations = [
     "1.17"
 ]
 
+[listeners]
+initialize = [
+    "com.github.glassmc.sculpt.SculptInitializeListener"
+]
+
 [dependencies]
 client = "*"

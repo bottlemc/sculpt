@@ -100,16 +100,16 @@ public class Renderer {
             }
 
             switch(direction) {
-                case Direction.LEFT:
+                case LEFT:
                     element.leftPadding = computedPadding;
                     break;
-                case Direction.TOP:
+                case TOP:
                     element.topPadding = computedPadding;
                     break;
-                case Direction.RIGHT:
+                case RIGHT:
                     element.rightPadding = computedPadding;
                     break;
-                case Direction.BOTTOM:
+                case BOTTOM:
                     element.bottomPadding = computedPadding;
                     break;
             }
