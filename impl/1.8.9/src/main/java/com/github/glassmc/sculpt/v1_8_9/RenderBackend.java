@@ -1,4 +1,4 @@
-package com.github.glassmc.sculpt.client.v1_8_9;
+package com.github.glassmc.sculpt.v1_8_9;
 
 import com.github.glassmc.sculpt.framework.Color;
 import com.github.glassmc.sculpt.framework.Vector2D;

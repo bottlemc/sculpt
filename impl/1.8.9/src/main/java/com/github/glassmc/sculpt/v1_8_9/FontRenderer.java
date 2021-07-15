@@ -1,4 +1,4 @@
-package com.github.glassmc.sculpt.client.v1_8_9;
+package com.github.glassmc.sculpt.v1_8_9;
 
 import net.minecraft.client.texture.NativeImageBackedTexture;
 import org.lwjgl.opengl.GL11;
