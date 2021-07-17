@@ -1,6 +1,4 @@
 include(
         ':exec',
-        ':impl:1.7.10',
-        ':impl:1.8.9',
-        ':impl:1.17'
+        ':impl:1.8.9'
 )

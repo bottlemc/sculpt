@@ -4,16 +4,17 @@ import com.github.glassmc.sculpt.framework.Color;
 import com.github.glassmc.sculpt.framework.constraint.Flexible;
 import com.github.glassmc.sculpt.framework.constraint.IConstraint;
 import com.github.glassmc.sculpt.framework.layout.Layout;
-import com.github.glassmc.sculpt.framework.layout.StandardLayout;
+import com.github.glassmc.sculpt.framework.layout.RegionLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class Container extends Element {
 
-    private Layout layout = new StandardLayout();
+    private Layout layout = new RegionLayout();
 
     private IConstraint x = new Flexible(), y = new Flexible();
     private boolean backgroundEnabled = false;
@@ -27,6 +28,10 @@ public class Container extends Element {
         }
     };
     private final List<Element> children = new ArrayList<>();
+
+    public Container() {
+        this.layout.setContainer(this);
+    }
 
     @SuppressWarnings("unused")
     public Container x(IConstraint x) {
@@ -135,6 +140,11 @@ public class Container extends Element {
     @SuppressWarnings("unused")
     public <T extends Layout> T getLayout(Class<T> layoutClass) {
         return layoutClass.cast(this.layout);
+    }
+
+    public Container apply(Consumer<Container> consumer) {
+        consumer.accept(this);
+        return this;
     }
 
 }

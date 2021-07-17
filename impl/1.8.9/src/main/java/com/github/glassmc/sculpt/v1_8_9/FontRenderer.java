@@ -52,17 +52,6 @@ public class FontRenderer {
         GL11.glPopMatrix();
     }
 
-    private BufferedImage resize(BufferedImage img, int newW, int newH) {
-        Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
-        BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
-
-        Graphics2D g2d = dimg.createGraphics();
-        g2d.drawImage(tmp, 0, 0, null);
-        g2d.dispose();
-
-        return dimg;
-    }
-
     protected NativeImageBackedTexture setupTexture(Font font, CharData[] chars) {
         return new NativeImageBackedTexture(generateFontImage(font, chars));
     }
@@ -97,7 +86,7 @@ public class FontRenderer {
 
             if (positionX + charData.width >= imgSize) {
                 positionX = 0;
-                positionY += charHeight + 25;
+                positionY += charHeight + 30;
                 charHeight = 0;
             }
 
@@ -110,7 +99,7 @@ public class FontRenderer {
 
             chars[i] = charData;
 
-            g.drawString(String.valueOf(ch), positionX, positionY + fontMetrics.getAscent());
+            g.drawString(String.valueOf(ch), positionX, positionY + charData.height - 45);
 
             positionX += charData.width;
         }

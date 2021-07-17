@@ -69,10 +69,10 @@ public class Renderer {
         }
 
         List<ElementData<? extends Element>> appliedElements = new ArrayList<>();
-        appliedElements.add(new ElementData<>(containerData, new Container(), -width, 0, width, height * 4));
-        appliedElements.add(new ElementData<>(containerData, new Container(), width, 0, width, height * 4));
-        appliedElements.add(new ElementData<>(containerData, new Container(), 0, -height, width * 4, height));
-        appliedElements.add(new ElementData<>(containerData, new Container(), 0, height, width * 4, height));
+        appliedElements.add(new ElementData<>(containerData, new Container(), -width, 0, width, height * 16));
+        appliedElements.add(new ElementData<>(containerData, new Container(), width, 0, width, height * 16));
+        appliedElements.add(new ElementData<>(containerData, new Container(), 0, -height, width * 16, height));
+        appliedElements.add(new ElementData<>(containerData, new Container(), 0, height, width * 16, height));
 
         for(ElementData<? extends Element> elementData : layoutElementData) {
             this.computePaddings(containerData, elementData);
@@ -206,7 +206,12 @@ public class Renderer {
             if(maxLeftRight == null) {
                 return;
             }
-            element.width = maxLeftRight.getValue() - maxLeftRight.getKey();
+            double newWidth = maxLeftRight.getValue() - maxLeftRight.getKey();
+            if(newWidth > 0) {
+                element.width = newWidth;
+            }
+        } else if(widthConstraint instanceof Copy) {
+            element.width = element.height;
         }
     }
 
@@ -229,7 +234,12 @@ public class Renderer {
             if(maxTopBottom == null) {
                 return;
             }
-            element.height = maxTopBottom.getValue() - maxTopBottom.getKey();
+            double newHeight = maxTopBottom.getValue() - maxTopBottom.getKey();
+            if(newHeight > 0) {
+                element.height = newHeight;
+            }
+        } else if(heightConstraint instanceof Copy) {
+            element.height = element.width;
         }
     }
 
