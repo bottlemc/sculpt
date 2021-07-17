@@ -22,12 +22,20 @@ public abstract class Constraint extends Component {
             return 0;
         }
 
+        public double getXValue(ElementData elementData, List<ElementData> appliedElements) {
+            return elementData.getX();
+        }
+
+        public double getYValue(ElementData elementData, List<ElementData> appliedElements) {
+            return elementData.getY();
+        }
+        
         public double getWidthValue(ElementData elementData, List<ElementData> appliedElements) {
-            return 0;
+            return elementData.getWidth();
         }
 
         public double getHeightValue(ElementData elementData, List<ElementData> appliedElements) {
-            return 0;
+            return elementData.getHeight();
         }
 
     }

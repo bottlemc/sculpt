@@ -41,7 +41,6 @@ public class Text extends Element {
         return this;
     }
 
-    @Override
     public Constraint getX() {
         return x;
     }
@@ -52,7 +51,6 @@ public class Text extends Element {
         return this;
     }
 
-    @Override
     public Constraint getY() {
         return y;
     }
@@ -138,6 +136,16 @@ public class Text extends Element {
         @Override
         public Constraint getHeightConstraint(ElementData elementData) {
             return new Absolute(this.getBounds(new Pair<>(this.getComponent(), elementData)).getHeight());
+        }
+
+        @Override
+        public Constraint getXConstraint(ElementData elementData) {
+            return this.getComponent().getX();
+        }
+
+        @Override
+        public Constraint getYConstraint(ElementData elementData) {
+            return this.getComponent().getY();
         }
 
         protected Rectangle2D getBounds(Pair<Element, ElementData> elementData) {

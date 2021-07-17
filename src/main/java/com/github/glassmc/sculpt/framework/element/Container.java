@@ -9,9 +9,6 @@ import com.github.glassmc.sculpt.framework.layout.Layout;
 import com.github.glassmc.sculpt.framework.layout.RegionLayout;
 import com.github.glassmc.sculpt.framework.util.Axis;
 
-import java.awt.font.FontRenderContext;
-import java.awt.font.TextLayout;
-import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +43,6 @@ public class Container extends Element {
         return this;
     }
 
-    @Override
     public Constraint getX() {
         return x;
     }
@@ -57,7 +53,6 @@ public class Container extends Element {
         return this;
     }
 
-    @Override
     public Constraint getY() {
         return y;
     }
@@ -208,6 +203,16 @@ public class Container extends Element {
             return this.getComponent().getHeight();
         }
 
+        @Override
+        public Constraint getXConstraint(ElementData elementData) {
+            return this.getComponent().getX();
+        }
+
+        @Override
+        public Constraint getYConstraint(ElementData elementData) {
+            return this.getComponent().getY();
+        }
+
         protected void adjustElementPosition(ElementData element, List<ElementData> appliedElements) {
             for(ElementData appliedElement : appliedElements) {
                 if(this.intersect(element, appliedElement, Axis.UNSPECIFIED)) {
@@ -262,84 +267,13 @@ public class Container extends Element {
         }
 
         protected void applyElementXRequest(Pair<Element, ElementData> elementData, List<ElementData> appliedElements) {
-            Constraint xConstraint = elementData.getKey().getX();
-
-            if(xConstraint instanceof Side) {
-                Side.Direction direction = ((Side) xConstraint).getDirection();
-
-                Pair<Double, Double> maxLeftRight = this.getMaximumExtension(elementData.getValue(), appliedElements, Axis.X);
-                if(maxLeftRight == null) {
-                    return;
-                }
-
-                if(direction == Side.Direction.NEGATIVE) {
-                    elementData.getValue().setX(maxLeftRight.getKey() + elementData.getValue().getWidth() / 2);
-                } else if(direction == Side.Direction.ZERO) {
-                    elementData.getValue().setX((maxLeftRight.getKey() + maxLeftRight.getValue()) / 2);
-                } else if(direction == Side.Direction.POSITIVE) {
-                    elementData.getValue().setX(maxLeftRight.getValue() - elementData.getValue().getWidth() / 2);
-                }
-            }
+            Constraint xConstraint = elementData.getKey().getConstructor().getXConstraint(elementData.getValue());
+            elementData.getValue().setX(xConstraint.getConstructor().getXValue(elementData.getValue(), appliedElements));
         }
 
         protected void applyElementYRequest(Pair<Element, ElementData> elementData, List<ElementData> appliedElements) {
-            Constraint yConstraint = elementData.getKey().getY();
-
-            if(yConstraint instanceof Side) {
-                Side.Direction direction = ((Side) yConstraint).getDirection();
-
-                Pair<Double, Double> maxTopBottom = this.getMaximumExtension(elementData.getValue(), appliedElements, Axis.Y);
-                if(maxTopBottom == null) {
-                    return;
-                }
-
-                if(direction == Side.Direction.NEGATIVE) {
-                    elementData.getValue().setY(maxTopBottom.getKey() + elementData.getValue().getHeight() / 2);
-                } else if(direction == Side.Direction.ZERO) {
-                    elementData.getValue().setY((maxTopBottom.getKey() + maxTopBottom.getValue()) / 2);
-                } else if(direction == Side.Direction.POSITIVE) {
-                    elementData.getValue().setY(maxTopBottom.getValue() - elementData.getValue().getHeight() / 2);
-                }
-            }
-        }
-
-        private Pair<Double, Double> getMaximumExtension(ElementData element, List<ElementData> appliedElements, Axis axis) {
-            if(axis == Axis.X) {
-                double maxLeft = -Double.MAX_VALUE;
-                double maxRight = Double.MAX_VALUE;
-
-                for(ElementData appliedElement : appliedElements) {
-                    MaxPaddingComputer maxPadding = new MaxPaddingComputer(element, appliedElement);
-
-                    if(this.intersect(element, appliedElement, Axis.X)) {
-                        if(element.getX() > appliedElement.getX()) {
-                            maxLeft = Math.max(maxLeft, appliedElement.getX() + appliedElement.getWidth() / 2 + maxPadding.getLeft());
-                        } else {
-                            maxRight = Math.min(maxRight, appliedElement.getX() - appliedElement.getWidth() / 2 - maxPadding.getRight());
-                        }
-                    }
-                }
-
-                return new Pair<>(maxLeft, maxRight);
-            } else if(axis == Axis.Y) {
-                double maxTop = -Double.MAX_VALUE;
-                double maxBottom = Double.MAX_VALUE;
-
-                for(ElementData appliedElement : appliedElements) {
-                    MaxPaddingComputer maxPadding = new MaxPaddingComputer(element, appliedElement);
-
-                    if(this.intersect(element, appliedElement, Axis.Y)) {
-                        if(element.getY() > appliedElement.getY()) {
-                            maxTop = Math.max(maxTop, appliedElement.getY() + appliedElement.getHeight() / 2 + maxPadding.getTop());
-                        } else {
-                            maxBottom = Math.min(maxBottom, appliedElement.getY() - appliedElement.getHeight() / 2 - maxPadding.getBottom());
-                        }
-                    }
-                }
-
-                return new Pair<>(maxTop, maxBottom);
-            }
-            return null;
+            Constraint yConstraint = elementData.getKey().getConstructor().getYConstraint(elementData.getValue());
+            elementData.getValue().setY(yConstraint.getConstructor().getYValue(elementData.getValue(), appliedElements));
         }
 
     }

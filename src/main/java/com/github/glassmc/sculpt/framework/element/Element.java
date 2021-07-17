@@ -16,9 +16,6 @@ public abstract class Element extends Component {
         return (Constructor<? extends Element>) super.getConstructor();
     }
 
-    public abstract Constraint getX();
-    public abstract Constraint getY();
-
     public enum Direction {
         TOP, RIGHT, BOTTOM, LEFT
     }
@@ -50,6 +47,14 @@ public abstract class Element extends Component {
                     elementData.setBottomPadding(computedPadding);
                     break;
             }
+        }
+
+        public Constraint getXConstraint(ElementData elementData) {
+            return null;
+        }
+
+        public Constraint getYConstraint(ElementData elementData) {
+            return null;
         }
 
         public Constraint getWidthConstraint(ElementData elementData) {

@@ -1,5 +1,6 @@
 package com.github.glassmc.sculpt.framework;
 
+import com.github.glassmc.sculpt.framework.element.Container;
 import com.github.glassmc.sculpt.framework.util.Axis;
 
 import java.util.ArrayList;
@@ -33,6 +34,45 @@ public class Component {
         @SuppressWarnings("unchecked")
         public void setComponent(Component component) {
             this.component = (T) component;
+        }
+
+        protected Pair<Double, Double> getMaximumExtension(ElementData element, List<ElementData> appliedElements, Axis axis) {
+            if(axis == Axis.X) {
+                double maxLeft = -Double.MAX_VALUE;
+                double maxRight = Double.MAX_VALUE;
+
+                for(ElementData appliedElement : appliedElements) {
+                    Component.Constructor.MaxPaddingComputer maxPadding = new Container.Constructor.MaxPaddingComputer(element, appliedElement);
+
+                    if(this.intersect(element, appliedElement, Axis.X)) {
+                        if(element.getX() > appliedElement.getX()) {
+                            maxLeft = Math.max(maxLeft, appliedElement.getX() + appliedElement.getWidth() / 2 + maxPadding.getLeft());
+                        } else {
+                            maxRight = Math.min(maxRight, appliedElement.getX() - appliedElement.getWidth() / 2 - maxPadding.getRight());
+                        }
+                    }
+                }
+
+                return new Pair<>(maxLeft, maxRight);
+            } else if(axis == Axis.Y) {
+                double maxTop = -Double.MAX_VALUE;
+                double maxBottom = Double.MAX_VALUE;
+
+                for(ElementData appliedElement : appliedElements) {
+                    Container.Constructor.MaxPaddingComputer maxPadding = new Container.Constructor.MaxPaddingComputer(element, appliedElement);
+
+                    if(this.intersect(element, appliedElement, Axis.Y)) {
+                        if(element.getY() > appliedElement.getY()) {
+                            maxTop = Math.max(maxTop, appliedElement.getY() + appliedElement.getHeight() / 2 + maxPadding.getTop());
+                        } else {
+                            maxBottom = Math.min(maxBottom, appliedElement.getY() - appliedElement.getHeight() / 2 - maxPadding.getBottom());
+                        }
+                    }
+                }
+
+                return new Pair<>(maxTop, maxBottom);
+            }
+            return null;
         }
 
         protected boolean intersect(ElementData element1, ElementData element2, Axis axis) {
