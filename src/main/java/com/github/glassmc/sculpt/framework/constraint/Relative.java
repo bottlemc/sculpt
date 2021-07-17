@@ -2,19 +2,21 @@ package com.github.glassmc.sculpt.framework.constraint;
 
 import com.github.glassmc.sculpt.framework.ElementData;
 
+import java.util.List;
+
 public class Relative extends Constraint {
 
     private final double percent;
     private final boolean otherAxis;
 
-    public Relative(double percent) {
-        this(percent, false);
-        this.possibleConstructors.add(new Constructor<>());
-    }
-
     public Relative(double percent, boolean otherAxis) {
+        this.possibleConstructors.add(new Constructor<>());
         this.percent = percent;
         this.otherAxis = otherAxis;
+    }
+
+    public Relative(double percent) {
+        this(percent, false);
     }
 
     public double getPercent() {
@@ -29,7 +31,19 @@ public class Relative extends Constraint {
 
         @Override
         public double getPaddingValue(ElementData elementData) {
-            return elementData.getParentData().getWidth() * this.getConstraint().getPercent();
+            return elementData.getParentData().getWidth() * this.getComponent().getPercent();
+        }
+
+        @Override
+        public double getWidthValue(ElementData elementData, List<ElementData> appliedElements) {
+            double base = this.getComponent().isOtherAxis() ? elementData.getParentData().getHeight() : elementData.getParentData().getWidth();
+            return base * this.getComponent().getPercent();
+        }
+
+        @Override
+        public double getHeightValue(ElementData elementData, List<ElementData> appliedElements) {
+            double base = this.getComponent().isOtherAxis() ? elementData.getParentData().getWidth() : elementData.getParentData().getHeight();
+            return base * this.getComponent().getPercent();
         }
 
     }

@@ -155,7 +155,7 @@ public class Container extends Element {
     public static class Constructor<T extends Container> extends Element.Constructor<T> {
 
         public void render(Renderer renderer, ElementData containerData) {
-            Container container = this.getElement();
+            Container container = this.getComponent();
             double width = containerData.getWidth();
             double height = containerData.getHeight();
 
@@ -194,8 +194,18 @@ public class Container extends Element {
         @Override
         protected void computePaddings(ElementData elementData) {
             for(Element.Direction direction : Element.Direction.values()) {
-                this.computePaddings(direction, elementData, this.getElement().getPadding(direction));
+                this.computePaddings(direction, elementData, this.getComponent().getPadding(direction));
             }
+        }
+
+        @Override
+        public Constraint getWidthConstraint(ElementData elementData) {
+            return this.getComponent().getWidth();
+        }
+
+        @Override
+        public Constraint getHeightConstraint(ElementData elementData) {
+            return this.getComponent().getHeight();
         }
 
         protected void adjustElementPosition(ElementData element, List<ElementData> appliedElements) {
@@ -205,11 +215,11 @@ public class Container extends Element {
 
                     MaxPaddingComputer maxPadding = new MaxPaddingComputer(element, appliedElement);
 
-                    possibleChanges.put((appliedElement.getRight() + maxPadding.left + element.getWidth() / 2) - element.getX(), Axis.X);
-                    possibleChanges.put((appliedElement.getLeft() - maxPadding.right - element.getWidth() / 2) - element.getX(), Axis.X);
+                    possibleChanges.put((appliedElement.getRight() + maxPadding.getLeft() + element.getWidth() / 2) - element.getX(), Axis.X);
+                    possibleChanges.put((appliedElement.getLeft() - maxPadding.getRight() - element.getWidth() / 2) - element.getX(), Axis.X);
 
-                    possibleChanges.put((appliedElement.getBottom() + maxPadding.top + element.getHeight() / 2) - element.getY(), Axis.Y);
-                    possibleChanges.put((appliedElement.getTop() - maxPadding.bottom - element.getHeight() / 2) - element.getY(), Axis.Y);
+                    possibleChanges.put((appliedElement.getBottom() + maxPadding.getTop() + element.getHeight() / 2) - element.getY(), Axis.Y);
+                    possibleChanges.put((appliedElement.getTop() - maxPadding.getBottom() - element.getHeight() / 2) - element.getY(), Axis.Y);
 
                     Map.Entry<Double, Axis> minChange = null;
                     for(Map.Entry<Double, Axis> change : possibleChanges.entrySet()) {
@@ -237,58 +247,13 @@ public class Container extends Element {
         }
 
         private void applyElementWidthRequest(Pair<Element, ElementData> elementData, List<ElementData> appliedElements) {
-            Constraint widthConstraint = null;
-            if(elementData.getKey() instanceof Container) {
-                widthConstraint = ((Container) elementData.getKey()).getWidth();
-            } else if(elementData.getKey() instanceof Text) {
-                widthConstraint = new Absolute(this.getBounds(elementData).getWidth());
-            }
-
-            if(widthConstraint instanceof Absolute) {
-                elementData.getValue().setWidth(((Absolute) widthConstraint).getValue());
-            } else if(widthConstraint instanceof Relative) {
-                Relative relative = (Relative) widthConstraint;
-                elementData.getValue().setWidth((relative.isOtherAxis() ? elementData.getValue().getParentData().getHeight() : elementData.getValue().getParentData().getWidth()) * relative.getPercent());
-            } else if(widthConstraint instanceof Flexible) {
-                Pair<Double, Double> maxLeftRight = this.getMaximumExtension(elementData.getValue(), appliedElements, Axis.X);
-                if(maxLeftRight == null) {
-                    return;
-                }
-                double newWidth = maxLeftRight.getValue() - maxLeftRight.getKey();
-                if(newWidth > 0) {
-                    elementData.getValue().setWidth(newWidth);
-                }
-
-            } else if(widthConstraint instanceof Copy) {
-                elementData.getValue().setWidth(elementData.getValue().getHeight());
-            }
+            Constraint widthConstraint = elementData.getKey().getConstructor().getWidthConstraint(elementData.getValue());
+            elementData.getValue().setWidth(widthConstraint.getConstructor().getWidthValue(elementData.getValue(), appliedElements));
         }
 
         private void applyElementHeightRequest(Pair<Element, ElementData> elementData, List<ElementData> appliedElements) {
-            Constraint heightConstraint = null;
-            if(elementData.getKey() instanceof Container) {
-                heightConstraint = ((Container) elementData.getKey()).getHeight();
-            } else if(elementData.getKey() instanceof Text) {
-                heightConstraint = new Absolute(this.getBounds(elementData).getHeight());
-            }
-
-            if(heightConstraint instanceof Absolute) {
-                elementData.getValue().setHeight(((Absolute) heightConstraint).getValue());
-            } else if(heightConstraint instanceof Relative) {
-                Relative relative = (Relative) heightConstraint;
-                elementData.getValue().setHeight((relative.isOtherAxis() ? elementData.getValue().getParentData().getWidth() : elementData.getValue().getParentData().getHeight()) * relative.getPercent());
-            } else if(heightConstraint instanceof Flexible) {
-                Pair<Double, Double> maxTopBottom = this.getMaximumExtension(elementData.getValue(), appliedElements, Axis.Y);
-                if(maxTopBottom == null) {
-                    return;
-                }
-                double newHeight = maxTopBottom.getValue() - maxTopBottom.getKey();
-                if(newHeight > 0) {
-                    elementData.getValue().setHeight(newHeight);
-                }
-            } else if(heightConstraint instanceof Copy) {
-                elementData.getValue().setHeight(elementData.getValue().getWidth());
-            }
+            Constraint heightConstraint = elementData.getKey().getConstructor().getHeightConstraint(elementData.getValue());
+            elementData.getValue().setHeight(heightConstraint.getConstructor().getHeightValue(elementData.getValue(), appliedElements));
         }
 
         protected void applyElementPositionRequests(Pair<Element, ElementData> element, List<ElementData> appliedElements) {
@@ -348,9 +313,9 @@ public class Container extends Element {
 
                     if(this.intersect(element, appliedElement, Axis.X)) {
                         if(element.getX() > appliedElement.getX()) {
-                            maxLeft = Math.max(maxLeft, appliedElement.getX() + appliedElement.getWidth() / 2 + maxPadding.left);
+                            maxLeft = Math.max(maxLeft, appliedElement.getX() + appliedElement.getWidth() / 2 + maxPadding.getLeft());
                         } else {
-                            maxRight = Math.min(maxRight, appliedElement.getX() - appliedElement.getWidth() / 2 - maxPadding.right);
+                            maxRight = Math.min(maxRight, appliedElement.getX() - appliedElement.getWidth() / 2 - maxPadding.getRight());
                         }
                     }
                 }
@@ -365,9 +330,9 @@ public class Container extends Element {
 
                     if(this.intersect(element, appliedElement, Axis.Y)) {
                         if(element.getY() > appliedElement.getY()) {
-                            maxTop = Math.max(maxTop, appliedElement.getY() + appliedElement.getHeight() / 2 + maxPadding.top);
+                            maxTop = Math.max(maxTop, appliedElement.getY() + appliedElement.getHeight() / 2 + maxPadding.getTop());
                         } else {
-                            maxBottom = Math.min(maxBottom, appliedElement.getY() - appliedElement.getHeight() / 2 - maxPadding.bottom);
+                            maxBottom = Math.min(maxBottom, appliedElement.getY() - appliedElement.getHeight() / 2 - maxPadding.getBottom());
                         }
                     }
                 }
@@ -375,59 +340,6 @@ public class Container extends Element {
                 return new Pair<>(maxTop, maxBottom);
             }
             return null;
-        }
-
-        protected boolean intersect(ElementData element1, ElementData element2, Axis axis) {
-            double lenience = 0.01;
-            MaxPaddingComputer maxPadding = new MaxPaddingComputer(element1, element2);
-
-            boolean intersectX = (element2.getBottom() > element1.getTop() - maxPadding.top + lenience) &&
-                    (element1.getBottom() + maxPadding.bottom - lenience > element2.getTop());
-            boolean intersectY = (element2.getRight() > element1.getLeft() - maxPadding.left + lenience) &&
-                    (element1.getRight() + maxPadding.right - lenience > element2.getLeft());
-
-            if(axis == Axis.X) {
-                return intersectX;
-            } else if(axis == Axis.Y) {
-                return intersectY;
-            }
-            return intersectX && intersectY;
-        }
-
-        private Rectangle2D getBounds(Pair<Element, ElementData> elementData) {
-            FontRenderContext fakeFontRendererContext = new FontRenderContext(null, false, false);
-            Text textElement = (Text) elementData.getKey();
-            double size = this.getFontSize(elementData);
-
-            TextLayout textLayout = new TextLayout(textElement.getText(), textElement.getFont().deriveFont((float) size), fakeFontRendererContext);
-            return textLayout.getBounds();
-        }
-
-        private double getFontSize(Pair<Element, ElementData> elementData) {
-            Text textElement = (Text) elementData.getKey();
-            Constraint sizeConstraint = textElement.getSize();
-
-            double size = 0;
-            if(sizeConstraint instanceof Absolute) {
-                size = ((Absolute) sizeConstraint).getValue();
-            } else if(sizeConstraint instanceof Relative) {
-                size = elementData.getValue().getParentData().getWidth() * ((Relative) sizeConstraint).getPercent();
-            }
-
-            return size;
-        }
-
-        private static class MaxPaddingComputer {
-
-            private final double left, top, right, bottom;
-
-            public MaxPaddingComputer(ElementData element1, ElementData element2) {
-                this.left = Math.max(element1.getLeftPadding(), element2.getRightPadding());
-                this.top = Math.max(element1.getTopPadding(), element2.getBottomPadding());
-                this.right = Math.max(element1.getRightPadding(), element2.getLeftPadding());
-                this.bottom = Math.max(element1.getBottomPadding(), element2.getTopPadding());
-            }
-
         }
 
     }

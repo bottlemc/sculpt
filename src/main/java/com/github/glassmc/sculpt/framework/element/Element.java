@@ -1,39 +1,29 @@
 package com.github.glassmc.sculpt.framework.element;
 
+import com.github.glassmc.sculpt.framework.Component;
 import com.github.glassmc.sculpt.framework.ElementData;
 import com.github.glassmc.sculpt.framework.Renderer;
 import com.github.glassmc.sculpt.framework.constraint.Constraint;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public abstract class Element {
-
-    protected final List<Constructor<?>> possibleConstructors = new ArrayList<>();
-    private Constructor<?> constructor;
+public abstract class Element extends Component {
 
     public Element() {
         this.possibleConstructors.add(new Constructor<>());
     }
 
+    @Override
+    public Constructor<? extends Element> getConstructor() {
+        return (Constructor<? extends Element>) super.getConstructor();
+    }
+
     public abstract Constraint getX();
     public abstract Constraint getY();
-
-    public Constructor<? extends Element> getConstructor() {
-        if(constructor == null) {
-            constructor = this.possibleConstructors.get(this.possibleConstructors.size() - 1);
-            constructor.setElement(this);
-        }
-        return constructor;
-    }
 
     public enum Direction {
         TOP, RIGHT, BOTTOM, LEFT
     }
 
-    public static class Constructor<T extends Element> {
-
-        private T element;
+    public static class Constructor<T extends Element> extends Component.Constructor<T> {
 
         public void render(Renderer renderer, ElementData elementData) {
 
@@ -62,13 +52,12 @@ public abstract class Element {
             }
         }
 
-        public T getElement() {
-            return element;
+        public Constraint getWidthConstraint(ElementData elementData) {
+            return null;
         }
 
-        @SuppressWarnings("unchecked")
-        public void setElement(Element element) {
-            this.element = (T) element;
+        public Constraint getHeightConstraint(ElementData elementData) {
+            return null;
         }
 
     }
