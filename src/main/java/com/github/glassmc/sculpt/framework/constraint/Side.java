@@ -1,6 +1,6 @@
 package com.github.glassmc.sculpt.framework.constraint;
 
-public class Side implements IConstraint {
+public class Side extends Constraint {
 
     private final Direction direction;
 

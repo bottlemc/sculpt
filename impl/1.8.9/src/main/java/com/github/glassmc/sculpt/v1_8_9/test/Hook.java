@@ -19,6 +19,7 @@ public class Hook {
 
     private static Container container = null;
 
+    @SuppressWarnings("unused")
     public static void onRender() throws IOException, FontFormatException {
         Map<String, List<ServerData>> servers = new HashMap<>();
         servers.put("Test Category", Collections.singletonList(new ServerData("Test Server", "Test Description")));
@@ -77,6 +78,7 @@ public class Hook {
                                                                 .padding(new Relative(0.0175)),
                                                                 RegionLayout.Region.LEFT)
                                                         .add(new Container()
+                                                                        .backgroundEnabled(true)
                                                                         .width(new Copy())
                                                                         .height(new Flexible())
                                                                         .padding(new Relative(0.0175))

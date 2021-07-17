@@ -1,5 +1,7 @@
 package com.github.glassmc.sculpt.framework.layout;
 
+import com.github.glassmc.sculpt.framework.ElementData;
+import com.github.glassmc.sculpt.framework.Pair;
 import com.github.glassmc.sculpt.framework.element.Element;
 
 import java.util.ArrayList;
@@ -10,8 +12,13 @@ public class ListLayout extends Layout {
     private final Type type;
     private final List<Element> elements = new ArrayList<>();
 
-    public ListLayout(Type type) {
+    public ListLayout(Constructor<?> constructor, Type type) {
+        super(constructor);
         this.type = type;
+    }
+
+    public ListLayout(Type type) {
+        this(new Constructor<>(), type);
     }
 
     public ListLayout add(Element element) {
@@ -31,6 +38,23 @@ public class ListLayout extends Layout {
     public enum Type {
         HORIZONTAL,
         VERTICAL
+    }
+
+    public static class Constructor<T extends ListLayout> extends Layout.Constructor<T> {
+
+        @Override
+        public List<Pair<Element, ElementData>> getStarterElementData(ElementData containerData) {
+            List<Element> elements = this.getLayout().getElements();
+            List<Pair<Element, ElementData>> defaultElementData = new ArrayList<>();
+            int index = 0;
+            for(Element element : elements) {
+                defaultElementData.add(new Pair<>(element, new ElementData(containerData, 0, -containerData.getHeight() / 2 + index, 1, 1)));
+                index += 1;
+            }
+
+            return defaultElementData;
+        }
+
     }
 
 }
