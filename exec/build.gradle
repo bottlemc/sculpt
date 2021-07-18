@@ -24,7 +24,7 @@ dependencies {
             resolvedImplementation project(name.isEmpty() ? ':' : name)
         }
     }
-    implementation 'com.github.glassmc:loader:v0.3.2'
+    runtimeOnly 'com.github.glassmc:loader:v0.3.2'
 }
 
 List<Project> collectAllProjects(Project project) {
@@ -43,9 +43,5 @@ String getName(Project project) {
 }
 
 shadowJar {
-    dependencies {
-        exclude(dependency {
-            it.configuration != 'runtimeElements'
-        })
-    }
+    configurations = [project.configurations.compileClasspath]
 }
