@@ -1,13 +1,10 @@
 package com.github.glassmc.sculpt.framework.element;
 
 import com.github.glassmc.sculpt.framework.Color;
-import com.github.glassmc.sculpt.framework.ElementData;
-import com.github.glassmc.sculpt.framework.Pair;
 import com.github.glassmc.sculpt.framework.Renderer;
 import com.github.glassmc.sculpt.framework.constraint.*;
 import com.github.glassmc.sculpt.framework.layout.Layout;
 import com.github.glassmc.sculpt.framework.layout.RegionLayout;
-import com.github.glassmc.sculpt.framework.modifier.Modifier;
 import com.github.glassmc.sculpt.framework.util.Axis;
 
 import java.util.ArrayList;
@@ -38,11 +35,14 @@ public class Container extends Element {
     public Container() {
         this.possibleConstructors.add(new Constructor<>());
         this.layout.setContainer(this);
+        this.x.setElement(this);
+        this.y.setElement(this);
     }
 
     @SuppressWarnings("unused")
     public Container x(Constraint x) {
         this.x = x;
+        x.setElement(this);
         return this;
     }
 
@@ -53,6 +53,7 @@ public class Container extends Element {
     @SuppressWarnings("unused")
     public Container y(Constraint y) {
         this.y = y;
+        y.setElement(this);
         return this;
     }
 
@@ -63,6 +64,7 @@ public class Container extends Element {
     @SuppressWarnings("UnusedReturnValue")
     public Container add(Element element) {
         this.children.add(element);
+        element.setParent(this);
         return this;
     }
 
@@ -73,6 +75,7 @@ public class Container extends Element {
     @SuppressWarnings("unused")
     public Container width(Constraint width) {
         this.width = width;
+        width.setElement(this);
         return this;
     }
 
@@ -83,6 +86,7 @@ public class Container extends Element {
     @SuppressWarnings("unused")
     public Container height(Constraint height) {
         this.height = height;
+        height.setElement(this);
         return this;
     }
 
@@ -103,6 +107,7 @@ public class Container extends Element {
     @SuppressWarnings("unused")
     public Container backgroundColor(Constraint backgroundColor) {
         this.backgroundColor = backgroundColor;
+        backgroundColor.setElement(this);
         return this;
     }
 
@@ -115,12 +120,14 @@ public class Container extends Element {
         for(Direction direction : Direction.values()) {
             this.padding.put(direction, padding);
         }
+        padding.setElement(this);
         return this;
     }
 
     @SuppressWarnings("unused")
     public Container padding(Direction direction, Constraint padding) {
         this.padding.put(direction, padding);
+        padding.setElement(this);
         return this;
     }
 
@@ -153,73 +160,82 @@ public class Container extends Element {
     public static class Constructor<T extends Container> extends Element.Constructor<T> {
 
         @Override
-        public void render(Renderer renderer, ElementData containerData, List<ElementData> parentAppliedElements) {
+        public void render(Renderer renderer, List<Element.Constructor<?>> parentAppliedElements) {
             Container container = this.getComponent();
-            double width = containerData.getWidth();
-            double height = containerData.getHeight();
+            double width = this.getWidth();
+            double height = this.getHeight();
 
             if(container.isBackgroundEnabled()) {
-                Color color = container.getBackgroundColor().getConstructor().getColorValue(renderer, containerData, parentAppliedElements);
-                renderer.getBackend().drawRectangle(containerData.getCalculatedX(), containerData.getCalculatedY(), width, height, color);
+                Color color = container.getBackgroundColor().getConstructor().getColorValue(renderer, parentAppliedElements);
+                renderer.getBackend().drawRectangle(this.getCalculatedX(), this.getCalculatedY(), width, height, color);
             }
 
             Layout layout = container.getLayout();
 
-            List<Pair<Element, ElementData>> layoutElementData = new ArrayList<>(layout.getConstructor().getStarterElementData(containerData));
+            List<Element.Constructor<?>> layoutElementData = new ArrayList<>(layout.getConstructor().getDefaultElements());
 
-            List<ElementData> appliedElements = new ArrayList<>();
-            appliedElements.add(new ElementData(containerData, -width, 0, width, height * 16));
-            appliedElements.add(new ElementData(containerData, width, 0, width, height * 16));
-            appliedElements.add(new ElementData(containerData, 0, -height, width * 16, height));
-            appliedElements.add(new ElementData(containerData, 0, height, width * 16, height));
+            List<Element.Constructor<?>> appliedElements = new ArrayList<>();
+            appliedElements.add(this.createPseudoConstructor(-width, 0, width, height * 16));
+            appliedElements.add(this.createPseudoConstructor(width, 0, width, height * 16));
+            appliedElements.add(this.createPseudoConstructor(0, -height, width * 16, height));
+            appliedElements.add(this.createPseudoConstructor(0, height, width * 16, height));
 
-            for(Pair<Element, ElementData> elementData : layoutElementData) {
-                this.computeChildPaddings(elementData);
+            for(Element.Constructor<?> element : layoutElementData) {
+                this.computeChildPaddings(element);
                 for(int i = 0; i < 3; i++) {
-                    this.adjustElementPosition(elementData.getValue(), appliedElements);
-                    this.applyElementSizeRequests(renderer, elementData, appliedElements);
+                    this.adjustElementPosition(element, appliedElements);
+                    this.applyElementSizeRequests(renderer, element, appliedElements);
                 }
-                this.applyElementPositionRequests(elementData, appliedElements);
+                this.applyElementPositionRequests(element, appliedElements);
 
-                appliedElements.add(elementData.getValue());
+                appliedElements.add(element);
 
-                elementData.getKey().getConstructor().render(renderer, elementData.getValue(), appliedElements);
+                element.render(renderer, appliedElements);
             }
         }
 
-        protected void computeChildPaddings(Pair<Element, ElementData> elementData) {
-            elementData.getKey().getConstructor().computePaddings(elementData.getValue());
+        protected Element.Constructor<?> createPseudoConstructor(double x, double y, double width, double height) {
+            Element.Constructor<?> constructor = new Element.Constructor<>();
+            constructor.setX(x);
+            constructor.setY(y);
+            constructor.setWidth(width);
+            constructor.setHeight(height);
+            return constructor;
+        }
+
+        protected void computeChildPaddings(Element.Constructor<?> element) {
+            element.computePaddings();
         }
 
         @Override
-        protected void computePaddings(ElementData elementData) {
+        protected void computePaddings() {
             for(Element.Direction direction : Element.Direction.values()) {
-                this.computePaddings(direction, elementData, this.getComponent().getPadding(direction));
+                this.computePaddings(direction, this.getComponent().getPadding(direction));
             }
         }
 
         @Override
-        public double getWidth(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
-            return this.getComponent().getWidth().getConstructor().getWidthValue(renderer, elementData, appliedElements);
+        public double getWidth(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
+            return this.getComponent().getWidth().getConstructor().getWidthValue(renderer, appliedElements);
         }
 
         @Override
-        public double getHeight(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
-            return this.getComponent().getHeight().getConstructor().getHeightValue(renderer, elementData, appliedElements);
+        public double getHeight(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
+            return this.getComponent().getHeight().getConstructor().getHeightValue(renderer, appliedElements);
         }
 
         @Override
-        public Constraint getXConstraint(ElementData elementData) {
+        public Constraint getXConstraint() {
             return this.getComponent().getX();
         }
 
         @Override
-        public Constraint getYConstraint(ElementData elementData) {
+        public Constraint getYConstraint() {
             return this.getComponent().getY();
         }
 
-        protected void adjustElementPosition(ElementData element, List<ElementData> appliedElements) {
-            for(ElementData appliedElement : appliedElements) {
+        protected void adjustElementPosition(Element.Constructor<?> element, List<Element.Constructor<?>> appliedElements) {
+            for(Element.Constructor<?> appliedElement : appliedElements) {
                 if(this.intersect(element, appliedElement, Axis.UNSPECIFIED)) {
                     Map<Double, Axis> possibleChanges = new HashMap<>();
 
@@ -251,34 +267,30 @@ public class Container extends Element {
             }
         }
 
-        protected void applyElementSizeRequests(Renderer renderer, Pair<Element, ElementData> elementData, List<ElementData> appliedElements) {
-            this.applyElementWidthRequest(renderer, elementData, appliedElements);
-            this.applyElementHeightRequest(renderer, elementData, appliedElements);
+        protected void applyElementSizeRequests(Renderer renderer, Element.Constructor<?> element, List<Element.Constructor<?>> appliedElements) {
+            this.applyElementWidthRequest(renderer, element, appliedElements);
+            this.applyElementHeightRequest(renderer, element, appliedElements);
         }
 
-        private void applyElementWidthRequest(Renderer renderer, Pair<Element, ElementData> elementData, List<ElementData> appliedElements) {
-            double width = elementData.getKey().getConstructor().getWidth(renderer, elementData.getValue(), appliedElements);
-            elementData.getValue().setWidth(width);
+        private void applyElementWidthRequest(Renderer renderer, Element.Constructor<?> element, List<Element.Constructor<?>> appliedElements) {
+            element.setWidth(element.getWidth(renderer, appliedElements));
         }
 
-        private void applyElementHeightRequest(Renderer renderer, Pair<Element, ElementData> elementData, List<ElementData> appliedElements) {
-            double height = elementData.getKey().getConstructor().getHeight(renderer, elementData.getValue(), appliedElements);
-            elementData.getValue().setHeight(height);
+        private void applyElementHeightRequest(Renderer renderer, Element.Constructor<?> element, List<Element.Constructor<?>> appliedElements) {
+            element.setHeight(element.getHeight(renderer, appliedElements));
         }
 
-        protected void applyElementPositionRequests(Pair<Element, ElementData> element, List<ElementData> appliedElements) {
+        protected void applyElementPositionRequests(Element.Constructor<?> element, List<Element.Constructor<?>> appliedElements) {
             this.applyElementXRequest(element, appliedElements);
             this.applyElementYRequest(element, appliedElements);
         }
 
-        protected void applyElementXRequest(Pair<Element, ElementData> elementData, List<ElementData> appliedElements) {
-            Constraint xConstraint = elementData.getKey().getConstructor().getXConstraint(elementData.getValue());
-            elementData.getValue().setX(xConstraint.getConstructor().getXValue(elementData.getValue(), appliedElements));
+        protected void applyElementXRequest(Element.Constructor<?> element, List<Element.Constructor<?>> appliedElements) {
+            element.setX(element.getXConstraint().getConstructor().getXValue(appliedElements));
         }
 
-        protected void applyElementYRequest(Pair<Element, ElementData> elementData, List<ElementData> appliedElements) {
-            Constraint yConstraint = elementData.getKey().getConstructor().getYConstraint(elementData.getValue());
-            elementData.getValue().setY(yConstraint.getConstructor().getYValue(elementData.getValue(), appliedElements));
+        protected void applyElementYRequest(Element.Constructor<?> element, List<Element.Constructor<?>> appliedElements) {
+            element.setY(element.getYConstraint().getConstructor().getYValue(appliedElements));
         }
 
     }

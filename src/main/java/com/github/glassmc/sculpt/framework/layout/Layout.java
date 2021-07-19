@@ -1,7 +1,6 @@
 package com.github.glassmc.sculpt.framework.layout;
 
 import com.github.glassmc.sculpt.framework.Component;
-import com.github.glassmc.sculpt.framework.ElementData;
 import com.github.glassmc.sculpt.framework.Pair;
 import com.github.glassmc.sculpt.framework.element.Container;
 import com.github.glassmc.sculpt.framework.element.Element;
@@ -31,7 +30,7 @@ public abstract class Layout extends Component {
 
     public static class Constructor<T extends Layout> extends Component.Constructor<T> {
 
-        public List<Pair<Element, ElementData>> getStarterElementData(ElementData containerData) {
+        public List<Element.Constructor<?>> getDefaultElements() {
             return null;
         }
 

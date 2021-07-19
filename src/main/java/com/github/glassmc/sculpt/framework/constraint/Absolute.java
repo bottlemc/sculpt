@@ -1,8 +1,8 @@
 package com.github.glassmc.sculpt.framework.constraint;
 
 import com.github.glassmc.sculpt.framework.Color;
-import com.github.glassmc.sculpt.framework.ElementData;
 import com.github.glassmc.sculpt.framework.Renderer;
+import com.github.glassmc.sculpt.framework.element.Element;
 
 import java.util.List;
 
@@ -30,22 +30,22 @@ public class Absolute extends Constraint {
     public static class Constructor<T extends Absolute> extends Constraint.Constructor<T> {
 
         @Override
-        public double getPaddingValue(ElementData elementData) {
+        public double getPaddingValue() {
             return (double) this.getComponent().getValue();
         }
 
         @Override
-        public double getWidthValue(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
+        public double getWidthValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
             return (double) super.getComponent().getValue();
         }
 
         @Override
-        public double getHeightValue(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
+        public double getHeightValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
             return (double) super.getComponent().getValue();
         }
 
         @Override
-        public Color getColorValue(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
+        public Color getColorValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
             return (Color) super.getComponent().getValue();
         }
 

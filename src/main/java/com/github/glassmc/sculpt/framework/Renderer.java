@@ -2,6 +2,7 @@ package com.github.glassmc.sculpt.framework;
 
 import com.github.glassmc.sculpt.framework.backend.IBackend;
 import com.github.glassmc.sculpt.framework.element.Container;
+import com.github.glassmc.sculpt.framework.element.Element;
 
 import java.util.ArrayList;
 
@@ -20,9 +21,12 @@ public class Renderer {
         double width = dimension.getFirst();
         double height = dimension.getSecond();
 
-        ElementData fakeParent = new ElementData(null, 0, 0, 1, 1);
-        ElementData elementData = new ElementData(fakeParent, width / 2, height / 2, width, height);
-        container.getConstructor().render(this, elementData, new ArrayList<>());
+        Element.Constructor<?> constructor = container.getConstructor();
+        constructor.setX(width / 2);
+        constructor.setY(height / 2);
+        constructor.setWidth(width);
+        constructor.setHeight(height);
+        container.getConstructor().render(this, new ArrayList<>());
 
         this.backend.postRender();
     }

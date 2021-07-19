@@ -1,7 +1,7 @@
 package com.github.glassmc.sculpt.framework.constraint;
 
-import com.github.glassmc.sculpt.framework.ElementData;
 import com.github.glassmc.sculpt.framework.Renderer;
+import com.github.glassmc.sculpt.framework.element.Element;
 
 import java.util.List;
 
@@ -31,20 +31,27 @@ public class Relative extends Constraint {
     public static class Constructor<T extends Relative> extends Constraint.Constructor<T> {
 
         @Override
-        public double getPaddingValue(ElementData elementData) {
-            return elementData.getParentData().getWidth() * this.getComponent().getPercent();
+        public double getPaddingValue() {
+            return this.getComponent().getElement().getParent().getConstructor().getWidth() * this.getComponent().getPercent();
         }
 
         @Override
-        public double getWidthValue(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
-            double base = this.getComponent().isOtherAxis() ? elementData.getParentData().getHeight() : elementData.getParentData().getWidth();
+        public double getWidthValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
+            Element.Constructor<?> parent = this.getComponent().getElement().getParent().getConstructor();
+            double base = this.getComponent().isOtherAxis() ? parent.getHeight() : parent.getWidth();
             return base * this.getComponent().getPercent();
         }
 
         @Override
-        public double getHeightValue(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
-            double base = this.getComponent().isOtherAxis() ? elementData.getParentData().getWidth() : elementData.getParentData().getHeight();
+        public double getHeightValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
+            Element.Constructor<?> parent = this.getComponent().getElement().getParent().getConstructor();
+            double base = this.getComponent().isOtherAxis() ? parent.getWidth() : parent.getHeight();
             return base * this.getComponent().getPercent();
+        }
+
+        @Override
+        public double getFontSizeValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
+            return this.getWidthValue(renderer, appliedElements);
         }
 
     }

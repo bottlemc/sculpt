@@ -1,6 +1,7 @@
 package com.github.glassmc.sculpt.framework;
 
 import com.github.glassmc.sculpt.framework.element.Container;
+import com.github.glassmc.sculpt.framework.element.Element;
 import com.github.glassmc.sculpt.framework.util.Axis;
 
 import java.util.ArrayList;
@@ -36,12 +37,12 @@ public class Component {
             this.component = (T) component;
         }
 
-        protected Pair<Double, Double> getMaximumExtension(ElementData element, List<ElementData> appliedElements, Axis axis) {
+        protected Pair<Double, Double> getMaximumExtension(Element.Constructor<?> element, List<Element.Constructor<?>> appliedElements, Axis axis) {
             if(axis == Axis.X) {
                 double maxLeft = -Double.MAX_VALUE;
                 double maxRight = Double.MAX_VALUE;
 
-                for(ElementData appliedElement : appliedElements) {
+                for(Element.Constructor<?> appliedElement : appliedElements) {
                     Component.Constructor.MaxPaddingComputer maxPadding = new Container.Constructor.MaxPaddingComputer(element, appliedElement);
 
                     if(this.intersect(element, appliedElement, Axis.X)) {
@@ -58,7 +59,7 @@ public class Component {
                 double maxTop = -Double.MAX_VALUE;
                 double maxBottom = Double.MAX_VALUE;
 
-                for(ElementData appliedElement : appliedElements) {
+                for(Element.Constructor<?> appliedElement : appliedElements) {
                     Container.Constructor.MaxPaddingComputer maxPadding = new Container.Constructor.MaxPaddingComputer(element, appliedElement);
 
                     if(this.intersect(element, appliedElement, Axis.Y)) {
@@ -75,7 +76,7 @@ public class Component {
             return null;
         }
 
-        protected boolean intersect(ElementData element1, ElementData element2, Axis axis) {
+        protected boolean intersect(Element.Constructor<?> element1, Element.Constructor<?> element2, Axis axis) {
             double lenience = 0.01;
             MaxPaddingComputer maxPadding = new MaxPaddingComputer(element1, element2);
 
@@ -96,7 +97,7 @@ public class Component {
 
             private final double left, top, right, bottom;
 
-            public MaxPaddingComputer(ElementData element1, ElementData element2) {
+            public MaxPaddingComputer(Element.Constructor<?> element1, Element.Constructor<?> element2) {
                 this.left = Math.max(element1.getLeftPadding(), element2.getRightPadding());
                 this.top = Math.max(element1.getTopPadding(), element2.getBottomPadding());
                 this.right = Math.max(element1.getRightPadding(), element2.getLeftPadding());

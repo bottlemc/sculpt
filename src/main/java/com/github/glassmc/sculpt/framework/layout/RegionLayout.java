@@ -1,7 +1,5 @@
 package com.github.glassmc.sculpt.framework.layout;
 
-import com.github.glassmc.sculpt.framework.ElementData;
-import com.github.glassmc.sculpt.framework.Pair;
 import com.github.glassmc.sculpt.framework.element.Element;
 
 import java.util.ArrayList;
@@ -54,9 +52,9 @@ public class RegionLayout extends Layout {
     public static class Constructor<T extends RegionLayout> extends Layout.Constructor<T> {
 
         @Override
-        public List<Pair<Element, ElementData>> getStarterElementData(ElementData containerData) {
+        public List<Element.Constructor<?>> getDefaultElements() {
             Map<RegionLayout.Region, List<Element>> regionMap = this.getComponent().getRegionMap();
-            List<Pair<Element, ElementData>> defaultElementData = new ArrayList<>();
+            List<Element.Constructor<?>> defaultElements = new ArrayList<>();
             for(Element element : this.getComponent().getContainer().getChildren()) {
                 RegionLayout.Region region = null;
                 for(RegionLayout.Region tempRegion : regionMap.keySet()) {
@@ -69,10 +67,16 @@ public class RegionLayout extends Layout {
                     continue;
                 }
 
-                defaultElementData.add(new Pair<>(element, new ElementData(containerData, region.getX() * containerData.getWidth() / 2, region.getY() * containerData.getHeight() / 2, 1, 1)));
+                Element.Constructor<?> containerConstructor = this.getComponent().getContainer().getConstructor();
+
+                Element.Constructor<?> elementConstructor = element.getConstructor();
+                elementConstructor.setX(region.getX() * containerConstructor.getWidth() / 2);
+                elementConstructor.setY(region.getY() * containerConstructor.getHeight() / 2);
+
+                defaultElements.add(elementConstructor);
             }
 
-            return defaultElementData;
+            return defaultElements;
         }
 
     }

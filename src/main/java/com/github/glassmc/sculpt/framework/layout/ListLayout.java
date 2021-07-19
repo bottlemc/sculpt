@@ -1,7 +1,5 @@
 package com.github.glassmc.sculpt.framework.layout;
 
-import com.github.glassmc.sculpt.framework.ElementData;
-import com.github.glassmc.sculpt.framework.Pair;
 import com.github.glassmc.sculpt.framework.element.Element;
 
 import java.util.ArrayList;
@@ -39,16 +37,17 @@ public class ListLayout extends Layout {
     public static class Constructor<T extends ListLayout> extends Layout.Constructor<T> {
 
         @Override
-        public List<Pair<Element, ElementData>> getStarterElementData(ElementData containerData) {
+        public List<Element.Constructor<?>> getDefaultElements() {
             List<Element> elements = this.getComponent().getElements();
-            List<Pair<Element, ElementData>> defaultElementData = new ArrayList<>();
+            List<Element.Constructor<?>> defaultElements = new ArrayList<>();
             int index = 0;
             for(Element element : elements) {
-                defaultElementData.add(new Pair<>(element, new ElementData(containerData, 0, -containerData.getHeight() / 2 + index, 1, 1)));
+                defaultElements.add(element.getConstructor());
+                element.getConstructor().setY(-this.getComponent().getContainer().getConstructor().getHeight() / 2 + index);
                 index += 1;
             }
 
-            return defaultElementData;
+            return defaultElements;
         }
 
     }

@@ -1,9 +1,9 @@
 package com.github.glassmc.sculpt.framework.constraint;
 
 import com.github.glassmc.sculpt.framework.Color;
-import com.github.glassmc.sculpt.framework.ElementData;
 import com.github.glassmc.sculpt.framework.Renderer;
 import com.github.glassmc.sculpt.framework.Vector2D;
+import com.github.glassmc.sculpt.framework.element.Element;
 
 import java.util.List;
 
@@ -26,6 +26,15 @@ public class Hover extends Constraint {
         this(time, new Object[] {initialValue, finalValue});
     }
 
+    @Override
+    public void setElement(Element element) {
+        if(this.data[0] instanceof Constraint) {
+            ((Constraint) this.data[0]).setElement(element);
+            ((Constraint) this.data[1]).setElement(element);
+        }
+        super.setElement(element);
+    }
+
     public long getTime() {
         return time;
     }
@@ -40,18 +49,11 @@ public class Hover extends Constraint {
 
         private long previousUpdate;
 
-        private ElementData cachedElementData;
-
-        protected void update(Renderer renderer, ElementData elementData) {
+        protected void update(Renderer renderer) {
             long previousUpdateDelta = System.currentTimeMillis() - previousUpdate;
 
-            ElementData effectiveElementData = elementData;
-
             if(previousUpdate != 0) {
-                if(effectiveElementData.getWidth() == 1 && effectiveElementData.getHeight() == 1) {
-                    effectiveElementData = cachedElementData;
-                }
-                if(this.isHovering(renderer.getBackend().getMouseLocation(), effectiveElementData)) {
+                if(this.isHovering(renderer.getBackend().getMouseLocation(), this.getComponent().getElement().getConstructor())) {
                     timeCache += previousUpdateDelta;
                 } else {
                     timeCache -= previousUpdateDelta;
@@ -61,39 +63,37 @@ public class Hover extends Constraint {
             timeCache = Math.max(0, Math.min(this.getComponent().getTime(), timeCache));
 
             previousUpdate = System.currentTimeMillis();
-
-            this.cachedElementData = elementData;
         }
 
         @Override
-        public Color getColorValue(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
-            this.update(renderer, elementData);
+        public Color getColorValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
+            this.update(renderer);
 
             double percent = (double) timeCache / this.getComponent().getTime();
             return Color.getBetween(percent, (Color) this.getComponent().getData()[0], (Color) this.getComponent().getData()[1]);
         }
 
         @Override
-        public double getWidthValue(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
-            this.update(renderer, elementData);
+        public double getWidthValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
+            this.update(renderer);
             Object[] data = this.getComponent().getData();
-            double initialWidth = ((Constraint) data[0]).getConstructor().getWidthValue(renderer, elementData, appliedElements);
-            double finalWidth = ((Constraint) data[1]).getConstructor().getWidthValue(renderer, elementData, appliedElements);
+            double initialWidth = ((Constraint) data[0]).getConstructor().getWidthValue(renderer, appliedElements);
+            double finalWidth = ((Constraint) data[1]).getConstructor().getWidthValue(renderer, appliedElements);
             double percent = (double) timeCache / this.getComponent().getTime();
             return (finalWidth - initialWidth) * percent + initialWidth;
         }
 
         @Override
-        public double getHeightValue(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
-            this.update(renderer, elementData);
+        public double getHeightValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
+            this.update(renderer);
             Object[] data = this.getComponent().getData();
-            double initialHeight = ((Constraint) data[0]).getConstructor().getHeightValue(renderer, elementData, appliedElements);
-            double finalHeight = ((Constraint) data[1]).getConstructor().getHeightValue(renderer, elementData, appliedElements);
+            double initialHeight = ((Constraint) data[0]).getConstructor().getHeightValue(renderer, appliedElements);
+            double finalHeight = ((Constraint) data[1]).getConstructor().getHeightValue(renderer, appliedElements);
             double percent = (double) timeCache / this.getComponent().getTime();
             return (finalHeight - initialHeight) * percent + initialHeight;
         }
 
-        private boolean isHovering(Vector2D mouseLocation, ElementData elementData) {
+        private boolean isHovering(Vector2D mouseLocation, Element.Constructor<?> elementData) {
             return mouseLocation.getFirst() > elementData.getCalculatedX() - elementData.getWidth() / 2 &&
                     mouseLocation.getFirst() < elementData.getCalculatedX() + elementData.getWidth() / 2 &&
                     mouseLocation.getSecond() > elementData.getCalculatedY() - elementData.getHeight() / 2 &&
