@@ -2,13 +2,15 @@ package com.github.glassmc.sculpt.v1_8_9;
 
 import com.github.glassmc.sculpt.framework.Color;
 import com.github.glassmc.sculpt.framework.Vector2D;
-import com.github.glassmc.sculpt.framework.backend.IRenderBackend;
+import com.github.glassmc.sculpt.framework.backend.IBackend;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.Window;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -18,7 +20,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RenderBackend implements IRenderBackend {
+public class Backend implements IBackend {
 
     private final Map<String, FontRenderer> fontCache = new HashMap<>();
 
@@ -95,6 +97,14 @@ public class RenderBackend implements IRenderBackend {
     @Override
     public void postRender() {
 
+    }
+
+    @Override
+    public Vector2D getMouseLocation() {
+        Window window = new Window(MinecraftClient.getInstance());
+        double mouseX = (double) Mouse.getX() / Display.getWidth() * window.getScaledWidth();
+        double mouseY = window.getScaledHeight() - ((double) Mouse.getY() / Display.getHeight() * window.getScaledHeight());
+        return new Vector2D(mouseX, mouseY);
     }
 
 }

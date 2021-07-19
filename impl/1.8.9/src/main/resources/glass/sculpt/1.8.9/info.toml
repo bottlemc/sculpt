@@ -1,7 +1,10 @@
+namespace = "com.github.glassmc.sculpt.v1_8_9"
+
 [listeners]
 initialize = [
-    "com.github.glassmc.sculpt.v1_8_9.SculptInitializeListener"
+    "SculptInitializeListener"
 ]
 
-[dependencies]
-client = "1.8.9"
+[environment]
+    [environment.has]
+    client = "1.8.9"

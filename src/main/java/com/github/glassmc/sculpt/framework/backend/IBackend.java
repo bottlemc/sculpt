@@ -5,7 +5,7 @@ import com.github.glassmc.sculpt.framework.Vector2D;
 
 import java.awt.*;
 
-public interface IRenderBackend {
+public interface IBackend {
 
     Vector2D getDimension();
 
@@ -16,5 +16,7 @@ public interface IRenderBackend {
     void drawText(Font font, String text, double x, double y, Color color);
 
     void postRender();
+
+    Vector2D getMouseLocation();
 
 }

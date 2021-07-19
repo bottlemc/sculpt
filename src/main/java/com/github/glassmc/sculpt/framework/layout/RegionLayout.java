@@ -13,12 +13,8 @@ public class RegionLayout extends Layout {
 
     private final Map<Region, List<Element>> regionMap = new HashMap<>();
 
-    public RegionLayout(Constructor<?> constructor) {
-        super(constructor);
-    }
-
     public RegionLayout() {
-        this(new Constructor<>());
+        this.possibleConstructors.add(new Constructor<>());
     }
 
     public RegionLayout add(Element element, Region region) {
@@ -59,9 +55,9 @@ public class RegionLayout extends Layout {
 
         @Override
         public List<Pair<Element, ElementData>> getStarterElementData(ElementData containerData) {
-            Map<RegionLayout.Region, List<Element>> regionMap = this.getLayout().getRegionMap();
+            Map<RegionLayout.Region, List<Element>> regionMap = this.getComponent().getRegionMap();
             List<Pair<Element, ElementData>> defaultElementData = new ArrayList<>();
-            for(Element element : this.getLayout().getContainer().getChildren()) {
+            for(Element element : this.getComponent().getContainer().getChildren()) {
                 RegionLayout.Region region = null;
                 for(RegionLayout.Region tempRegion : regionMap.keySet()) {
                     if(regionMap.get(tempRegion).contains(element)) {

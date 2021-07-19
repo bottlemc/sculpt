@@ -1,5 +1,6 @@
 package com.github.glassmc.sculpt.framework.layout;
 
+import com.github.glassmc.sculpt.framework.Component;
 import com.github.glassmc.sculpt.framework.ElementData;
 import com.github.glassmc.sculpt.framework.Pair;
 import com.github.glassmc.sculpt.framework.element.Container;
@@ -7,19 +8,12 @@ import com.github.glassmc.sculpt.framework.element.Element;
 
 import java.util.List;
 
-public abstract class Layout {
-
-    private final Constructor<?> constructor;
+public abstract class Layout extends Component {
 
     private Container container;
 
-    public Layout(Constructor<?> constructor) {
-        this.constructor = constructor;
-        this.constructor.setLayout(this);
-    }
-
     public Layout() {
-        this(new Constructor<>());
+       this.possibleConstructors.add(new Constructor<>());
     }
 
     public void setContainer(Container container) {
@@ -30,25 +24,15 @@ public abstract class Layout {
         return this.container;
     }
 
-    public Constructor<?> getConstructor() {
-        return constructor;
+    @Override
+    public Layout.Constructor<? extends Layout> getConstructor() {
+        return (Constructor<? extends Layout>) super.getConstructor();
     }
 
-    public static class Constructor<T extends Layout> {
-
-        private T layout;
+    public static class Constructor<T extends Layout> extends Component.Constructor<T> {
 
         public List<Pair<Element, ElementData>> getStarterElementData(ElementData containerData) {
             return null;
-        }
-
-        public T getLayout() {
-            return layout;
-        }
-
-        @SuppressWarnings("unchecked")
-        public void setLayout(Layout layout) {
-            this.layout = (T) layout;
         }
 
     }

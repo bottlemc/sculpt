@@ -1,13 +1,13 @@
 package com.github.glassmc.sculpt.framework;
 
-import com.github.glassmc.sculpt.framework.backend.IRenderBackend;
+import com.github.glassmc.sculpt.framework.backend.IBackend;
 import com.github.glassmc.sculpt.framework.element.Container;
 
 public class Renderer {
 
-    private final IRenderBackend backend;
+    private final IBackend backend;
 
-    public Renderer(IRenderBackend backend) {
+    public Renderer(IBackend backend) {
         this.backend = backend;
     }
 
@@ -25,7 +25,7 @@ public class Renderer {
         this.backend.postRender();
     }
 
-    public IRenderBackend getBackend() {
+    public IBackend getBackend() {
         return backend;
     }
 

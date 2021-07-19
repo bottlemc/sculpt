@@ -7,6 +7,7 @@ import com.github.glassmc.sculpt.framework.Renderer;
 import com.github.glassmc.sculpt.framework.constraint.*;
 import com.github.glassmc.sculpt.framework.layout.Layout;
 import com.github.glassmc.sculpt.framework.layout.RegionLayout;
+import com.github.glassmc.sculpt.framework.modifier.Modifier;
 import com.github.glassmc.sculpt.framework.util.Axis;
 
 import java.util.ArrayList;
@@ -20,8 +21,14 @@ public class Container extends Element {
     private Layout layout = new RegionLayout();
 
     private Constraint x = new Flexible(), y = new Flexible();
+
     private boolean backgroundEnabled = false;
+    private boolean staticBackground = true;
     private Color backgroundColor = new Color(1., 1., 1.);
+    private Modifier backgroundColorModifier;
+    private Color initialBackgroundColor;
+    private Color finalBackgroundColor;
+
     private Constraint width = new Flexible(), height = new Flexible();
     private final Map<Direction, Constraint> padding = new HashMap<Direction, Constraint>() {
         {
@@ -100,11 +107,36 @@ public class Container extends Element {
     @SuppressWarnings("unused")
     public Container backgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
+        this.staticBackground = true;
         return this;
+    }
+
+    public Container backgroundColor(Modifier backgroundColorModifier, Color initialBackgroundColor, Color finalBackgroundColor) {
+        this.backgroundColorModifier = backgroundColorModifier;
+        this.initialBackgroundColor = initialBackgroundColor;
+        this.finalBackgroundColor = finalBackgroundColor;
+        this.staticBackground = false;
+        return this;
+    }
+
+    public Modifier getBackgroundColorModifier() {
+        return backgroundColorModifier;
+    }
+
+    public Color getInitialBackgroundColor() {
+        return initialBackgroundColor;
+    }
+
+    public Color getFinalBackgroundColor() {
+        return finalBackgroundColor;
     }
 
     public Color getBackgroundColor() {
         return backgroundColor;
+    }
+
+    public boolean isStaticBackground() {
+        return staticBackground;
     }
 
     @SuppressWarnings("unused")
@@ -155,7 +187,14 @@ public class Container extends Element {
             double height = containerData.getHeight();
 
             if(container.isBackgroundEnabled()) {
-                renderer.getBackend().drawRectangle(containerData.getCalculatedX(), containerData.getCalculatedY(), width, height, container.getBackgroundColor());
+                Color color;
+                if(container.isStaticBackground()) {
+                    color = container.getBackgroundColor();
+                } else {
+                    container.getBackgroundColorModifier().getConstructor().update(renderer, containerData);
+                    color = Color.getBetween(container.getBackgroundColorModifier().getConstructor().getPercent(), container.getInitialBackgroundColor(), container.getFinalBackgroundColor());
+                }
+                renderer.getBackend().drawRectangle(containerData.getCalculatedX(), containerData.getCalculatedY(), width, height, color);
             }
 
             Layout layout = container.getLayout();

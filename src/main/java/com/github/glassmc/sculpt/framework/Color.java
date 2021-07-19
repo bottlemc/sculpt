@@ -2,6 +2,13 @@ package com.github.glassmc.sculpt.framework;
 
 public class Color {
 
+    public static Color getBetween(double percent, Color color1, Color color2) {
+        return new Color((color2.red - color1.red) * percent + color1.red,
+                (color2.green - color1.green) * percent + color1.green,
+                (color2.blue - color1.blue) * percent + color1.blue,
+                (color2.alpha - color1.alpha) * percent + color1.alpha);
+    }
+
     private final double red, green, blue, alpha;
 
     public Color(int red, int green, int blue) {

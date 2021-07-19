@@ -12,13 +12,9 @@ public class ListLayout extends Layout {
     private final Type type;
     private final List<Element> elements = new ArrayList<>();
 
-    public ListLayout(Constructor<?> constructor, Type type) {
-        super(constructor);
-        this.type = type;
-    }
-
     public ListLayout(Type type) {
-        this(new Constructor<>(), type);
+        this.possibleConstructors.add(new Constructor<>());
+        this.type = type;
     }
 
     public ListLayout add(Element element) {
@@ -44,7 +40,7 @@ public class ListLayout extends Layout {
 
         @Override
         public List<Pair<Element, ElementData>> getStarterElementData(ElementData containerData) {
-            List<Element> elements = this.getLayout().getElements();
+            List<Element> elements = this.getComponent().getElements();
             List<Pair<Element, ElementData>> defaultElementData = new ArrayList<>();
             int index = 0;
             for(Element element : elements) {
