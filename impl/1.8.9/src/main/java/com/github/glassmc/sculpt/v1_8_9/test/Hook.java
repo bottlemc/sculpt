@@ -9,7 +9,9 @@ import com.github.glassmc.sculpt.framework.element.Element;
 import com.github.glassmc.sculpt.framework.element.Text;
 import com.github.glassmc.sculpt.framework.layout.ListLayout;
 import com.github.glassmc.sculpt.framework.layout.RegionLayout;
-import com.github.glassmc.sculpt.framework.modifier.Hover;
+import com.github.glassmc.sculpt.framework.modifier.Recolor;
+import com.github.glassmc.sculpt.framework.modifier.Resize;
+import com.github.glassmc.sculpt.framework.modifier.returner.Hover;
 
 import java.awt.*;
 import java.io.IOException;
@@ -86,8 +88,9 @@ public class Hook {
                                                                         .getLayout(RegionLayout.class)
                                                                         .add(new Container()
                                                                                 .backgroundEnabled(true)
-                                                                                .backgroundColor(new Hover().setTime(500), new Color(0.25, 0.25, 0.25), new Color(0.5, 0.5, 0.5))
-                                                                                .width(new Flexible())
+                                                                                .width(new Resize(new Hover(500), new Relative(0.3), new Relative(0.8)))
+                                                                                .backgroundColor(new Recolor(new Hover(500), new Color(0.25, 0.25, 0.25), new Color(0.5, 0.5, 0.5)))
+                                                                                //.width(new Flexible())
                                                                                 .height(new Relative(0.5)),
                                                                                 RegionLayout.Region.TOP)
                                                                         .add(new Container()

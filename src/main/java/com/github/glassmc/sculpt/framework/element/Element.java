@@ -5,6 +5,8 @@ import com.github.glassmc.sculpt.framework.ElementData;
 import com.github.glassmc.sculpt.framework.Renderer;
 import com.github.glassmc.sculpt.framework.constraint.Constraint;
 
+import java.util.List;
+
 public abstract class Element extends Component {
 
     public Element() {
@@ -57,12 +59,12 @@ public abstract class Element extends Component {
             return null;
         }
 
-        public Constraint getWidthConstraint(ElementData elementData) {
-            return null;
+        public double getWidth(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
+            return 0;
         }
 
-        public Constraint getHeightConstraint(ElementData elementData) {
-            return null;
+        public double getHeight(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
+            return 0;
         }
 
     }

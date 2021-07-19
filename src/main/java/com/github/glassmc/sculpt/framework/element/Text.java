@@ -14,6 +14,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Text extends Element {
@@ -129,13 +130,13 @@ public class Text extends Element {
         }
 
         @Override
-        public Constraint getWidthConstraint(ElementData elementData) {
-            return new Absolute(this.getBounds(new Pair<>(this.getComponent(), elementData)).getWidth());
+        public double getWidth(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
+            return this.getBounds(new Pair<>(this.getComponent(), elementData)).getWidth();
         }
 
         @Override
-        public Constraint getHeightConstraint(ElementData elementData) {
-            return new Absolute(this.getBounds(new Pair<>(this.getComponent(), elementData)).getHeight());
+        public double getHeight(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
+            return this.getBounds(new Pair<>(this.getComponent(), elementData)).getHeight();
         }
 
         @Override
