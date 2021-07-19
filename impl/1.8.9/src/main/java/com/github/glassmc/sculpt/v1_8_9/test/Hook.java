@@ -9,9 +9,6 @@ import com.github.glassmc.sculpt.framework.element.Element;
 import com.github.glassmc.sculpt.framework.element.Text;
 import com.github.glassmc.sculpt.framework.layout.ListLayout;
 import com.github.glassmc.sculpt.framework.layout.RegionLayout;
-import com.github.glassmc.sculpt.framework.modifier.Recolor;
-import com.github.glassmc.sculpt.framework.modifier.Resize;
-import com.github.glassmc.sculpt.framework.modifier.returner.Hover;
 
 import java.awt.*;
 import java.io.IOException;
@@ -32,11 +29,11 @@ public class Hook {
 
             container = new Container()
                     .backgroundEnabled(true)
-                    .backgroundColor(new Color(0.2, 0.2, 0.2))
+                    .backgroundColor(new Absolute(new Color(0.2, 0.2, 0.2)))
                     .getLayout(RegionLayout.class)
                     .add(new Container()
                             .backgroundEnabled(true)
-                            .backgroundColor(new Color(0.15, 0.15, 0.15))
+                            .backgroundColor(new Absolute(new Color(0.15, 0.15, 0.15)))
                             .width(new Relative(0.75, true))
                             .height(new Relative(0.9))
                             .layout(new ListLayout(ListLayout.Type.VERTICAL))
@@ -52,11 +49,11 @@ public class Hook {
                                                             .size(new Relative(0.05))
                                                             .font(roboto)
                                                             .text(category)
-                                                            .color(new Color(0.8, 0.8, 0.8)),
+                                                            .color(new Absolute(new Color(0.8, 0.8, 0.8))),
                                                             RegionLayout.Region.LEFT)
                                                     .add(new Container()
                                                             .backgroundEnabled(true)
-                                                            .backgroundColor(new Color(0.8, 0.8, 0.8))
+                                                            .backgroundColor(new Absolute(new Color(0.8, 0.8, 0.8)))
                                                             .width(new Flexible())
                                                             .height(new Absolute(1))
                                                             .padding(Element.Direction.LEFT, new Relative(0.05))
@@ -68,14 +65,14 @@ public class Hook {
                                         container1.getLayout(ListLayout.class)
                                                 .add(new Container()
                                                         .backgroundEnabled(true)
-                                                        .backgroundColor(new Color(0.2, 0.2, 0.2))
+                                                        .backgroundColor(new Absolute(new Color(0.2, 0.2, 0.2)))
                                                         .width(new Flexible())
                                                         .height(new Relative(0.15))
                                                         .padding(new Relative(0.0125))
                                                         .getLayout(RegionLayout.class)
                                                         .add(new Container()
                                                                 .backgroundEnabled(true)
-                                                                .backgroundColor(new Color(0.4, 0.4, 0.4))
+                                                                .backgroundColor(new Absolute(new Color(0.4, 0.4, 0.4)))
                                                                 .width(new Copy())
                                                                 .height(new Flexible())
                                                                 .padding(new Relative(0.0175)),
@@ -88,14 +85,13 @@ public class Hook {
                                                                         .getLayout(RegionLayout.class)
                                                                         .add(new Container()
                                                                                 .backgroundEnabled(true)
-                                                                                .width(new Resize(new Hover(500), new Relative(0.3), new Relative(0.8)))
-                                                                                .backgroundColor(new Recolor(new Hover(500), new Color(0.25, 0.25, 0.25), new Color(0.5, 0.5, 0.5)))
-                                                                                //.width(new Flexible())
+                                                                                .backgroundColor(new Hover(150, new Color(0.25, 0.25, 0.25), new Color(0.5, 0.5, 0.5)))
+                                                                                .width(new Hover(150, new Relative(0.3), new Relative(0.8)))
                                                                                 .height(new Relative(0.5)),
                                                                                 RegionLayout.Region.TOP)
                                                                         .add(new Container()
                                                                                 .backgroundEnabled(true)
-                                                                                .backgroundColor(new Color(0.25, 0.25, 0.25))
+                                                                                .backgroundColor(new Absolute(new Color(0.25, 0.25, 0.25)))
                                                                                 .width(new Flexible())
                                                                                 .height(new Relative(0.5)),
                                                                                 RegionLayout.Region.BOTTOM)
@@ -109,7 +105,7 @@ public class Hook {
                                                                                 .size(new Relative(0.065))
                                                                                 .font(roboto)
                                                                                 .padding(new Relative(0.025))
-                                                                                .color(new Color(0.8, 0.8, 0.8))
+                                                                                .color(new Absolute(new Color(0.8, 0.8, 0.8)))
                                                                                 .text(data.name)
                                                                                 .y(new Side(Side.Direction.NEGATIVE)),
                                                                                 RegionLayout.Region.LEFT)
@@ -117,7 +113,7 @@ public class Hook {
                                                                                 .size(new Relative(0.045))
                                                                                 .font(roboto)
                                                                                 .padding(new Relative(0.025))
-                                                                                .color(new Color(0.5, 0.5, 0.5))
+                                                                                .color(new Absolute(new Color(0.5, 0.5, 0.5)))
                                                                                 .text(data.description)
                                                                                 .y(new Side(Side.Direction.NEGATIVE)),
                                                                                 RegionLayout.Region.LEFT)

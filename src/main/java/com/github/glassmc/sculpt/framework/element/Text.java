@@ -2,12 +2,10 @@ package com.github.glassmc.sculpt.framework.element;
 
 import com.github.glassmc.sculpt.framework.Color;
 import com.github.glassmc.sculpt.framework.ElementData;
-import com.github.glassmc.sculpt.framework.Pair;
 import com.github.glassmc.sculpt.framework.Renderer;
 import com.github.glassmc.sculpt.framework.constraint.Absolute;
 import com.github.glassmc.sculpt.framework.constraint.Flexible;
 import com.github.glassmc.sculpt.framework.constraint.Constraint;
-import com.github.glassmc.sculpt.framework.constraint.Relative;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
@@ -20,7 +18,7 @@ import java.util.Map;
 public class Text extends Element {
 
     private Constraint x = new Flexible(), y = new Flexible();
-    private Color color = new Color(1., 1., 1.);
+    private Constraint color = new Absolute(new Color(1., 1., 1.));
     private String text = "";
     private Font font = new Font(Font.SERIF, Font.PLAIN, 0);
     private Constraint size = new Flexible();
@@ -57,12 +55,12 @@ public class Text extends Element {
     }
 
     @SuppressWarnings("unused")
-    public Text color(Color color) {
+    public Text color(Constraint color) {
         this.color = color;
         return this;
     }
 
-    public Color getColor() {
+    public Constraint getColor() {
         return color;
     }
 
@@ -117,9 +115,10 @@ public class Text extends Element {
     public static class Constructor<T extends Text> extends Element.Constructor<T> {
 
         @Override
-        public void render(Renderer renderer, ElementData elementData) {
+        public void render(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
             Text textElement = this.getComponent();
-            renderer.getBackend().drawText(textElement.getFont().deriveFont((float) this.getFontSize(new Pair<>(this.getComponent(), elementData))), textElement.getText(), elementData.getCalculatedX(), elementData.getCalculatedY(), textElement.getColor());
+            Color color = textElement.getColor().getConstructor().getColorValue(renderer, elementData, appliedElements);
+            renderer.getBackend().drawText(textElement.getFont().deriveFont((float) this.getFontSize(elementData, appliedElements)), textElement.getText(), elementData.getCalculatedX(), elementData.getCalculatedY(), color);
         }
 
         @Override
@@ -131,12 +130,12 @@ public class Text extends Element {
 
         @Override
         public double getWidth(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
-            return this.getBounds(new Pair<>(this.getComponent(), elementData)).getWidth();
+            return this.getBounds(elementData, appliedElements).getWidth();
         }
 
         @Override
         public double getHeight(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
-            return this.getBounds(new Pair<>(this.getComponent(), elementData)).getHeight();
+            return this.getBounds(elementData, appliedElements).getHeight();
         }
 
         @Override
@@ -149,27 +148,18 @@ public class Text extends Element {
             return this.getComponent().getY();
         }
 
-        protected Rectangle2D getBounds(Pair<Element, ElementData> elementData) {
+        protected Rectangle2D getBounds(ElementData elementData, List<ElementData> appliedElements) {
             FontRenderContext fakeFontRendererContext = new FontRenderContext(null, false, false);
-            Text textElement = (Text) elementData.getKey();
-            double size = this.getFontSize(elementData);
+            Text textElement = this.getComponent();
+            double size = this.getFontSize(elementData, appliedElements);
 
             TextLayout textLayout = new TextLayout(textElement.getText(), textElement.getFont().deriveFont((float) size), fakeFontRendererContext);
             return textLayout.getBounds();
         }
 
-        private double getFontSize(Pair<Element, ElementData> elementData) {
-            Text textElement = (Text) elementData.getKey();
-            Constraint sizeConstraint = textElement.getSize();
-
-            double size = 0;
-            if(sizeConstraint instanceof Absolute) {
-                size = ((Absolute) sizeConstraint).getValue();
-            } else if(sizeConstraint instanceof Relative) {
-                size = elementData.getValue().getParentData().getWidth() * ((Relative) sizeConstraint).getPercent();
-            }
-
-            return size;
+        private double getFontSize(ElementData elementData, List<ElementData> appliedElements) {
+            Text textElement = this.getComponent();
+            return textElement.getSize().getConstructor().getFontSizeValue(elementData, appliedElements);
         }
 
     }

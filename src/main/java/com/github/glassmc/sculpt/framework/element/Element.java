@@ -24,7 +24,7 @@ public abstract class Element extends Component {
 
     public static class Constructor<T extends Element> extends Component.Constructor<T> {
 
-        public void render(Renderer renderer, ElementData elementData) {
+        public void render(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
 
         }
 

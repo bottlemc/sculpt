@@ -23,13 +23,9 @@ public class Container extends Element {
     private Constraint x = new Flexible(), y = new Flexible();
 
     private boolean backgroundEnabled = false;
-    private boolean staticBackground = true;
-    private Color backgroundColor = new Color(1., 1., 1.);
-    private Modifier backgroundColorModifier;
+    private Constraint backgroundColor = new Absolute(new Color(1., 1., 1.));
 
-    private boolean staticWidth, staticHeight;
     private Constraint width = new Flexible(), height = new Flexible();
-    private Modifier widthModifier, heightModifier;
     private final Map<Direction, Constraint> padding = new HashMap<Direction, Constraint>() {
         {
             for(Direction direction : Direction.values()) {
@@ -77,51 +73,21 @@ public class Container extends Element {
     @SuppressWarnings("unused")
     public Container width(Constraint width) {
         this.width = width;
-        this.staticWidth = true;
         return this;
-    }
-
-    public Container width(Modifier widthModifier) {
-        this.widthModifier = widthModifier;
-        this.staticWidth = false;
-        return this;
-    }
-
-    public boolean isStaticWidth() {
-        return staticWidth;
     }
 
     public Constraint getWidth() {
         return width;
     }
 
-    public Modifier getWidthModifier() {
-        return widthModifier;
-    }
-
     @SuppressWarnings("unused")
     public Container height(Constraint height) {
         this.height = height;
-        this.staticHeight = true;
         return this;
-    }
-
-    public Container height(Modifier heightModifier) {
-        this.heightModifier = heightModifier;
-        this.staticHeight = false;
-        return this;
-    }
-
-    public boolean isStaticHeight() {
-        return staticHeight;
     }
 
     public Constraint getHeight() {
         return height;
-    }
-
-    public Modifier getHeightModifier() {
-        return heightModifier;
     }
 
     @SuppressWarnings("unused")
@@ -135,28 +101,13 @@ public class Container extends Element {
     }
 
     @SuppressWarnings("unused")
-    public Container backgroundColor(Color backgroundColor) {
+    public Container backgroundColor(Constraint backgroundColor) {
         this.backgroundColor = backgroundColor;
-        this.staticBackground = true;
         return this;
     }
 
-    public Container backgroundColor(Modifier backgroundColorModifier) {
-        this.backgroundColorModifier = backgroundColorModifier;
-        this.staticBackground = false;
-        return this;
-    }
-
-    public Modifier getBackgroundColorModifier() {
-        return backgroundColorModifier;
-    }
-
-    public Color getBackgroundColor() {
+    public Constraint getBackgroundColor() {
         return backgroundColor;
-    }
-
-    public boolean isStaticBackground() {
-        return staticBackground;
     }
 
     @SuppressWarnings("unused")
@@ -201,19 +152,14 @@ public class Container extends Element {
 
     public static class Constructor<T extends Container> extends Element.Constructor<T> {
 
-        public void render(Renderer renderer, ElementData containerData) {
+        @Override
+        public void render(Renderer renderer, ElementData containerData, List<ElementData> parentAppliedElements) {
             Container container = this.getComponent();
             double width = containerData.getWidth();
             double height = containerData.getHeight();
 
             if(container.isBackgroundEnabled()) {
-                Color color;
-                if(container.isStaticBackground()) {
-                    color = container.getBackgroundColor();
-                } else {
-                    container.getBackgroundColorModifier().getConstructor().update(renderer, containerData);
-                    color = container.getBackgroundColorModifier().getConstructor().getColor(renderer, containerData);
-                }
+                Color color = container.getBackgroundColor().getConstructor().getColorValue(renderer, containerData, parentAppliedElements);
                 renderer.getBackend().drawRectangle(containerData.getCalculatedX(), containerData.getCalculatedY(), width, height, color);
             }
 
@@ -237,7 +183,7 @@ public class Container extends Element {
 
                 appliedElements.add(elementData.getValue());
 
-                elementData.getKey().getConstructor().render(renderer, elementData.getValue());
+                elementData.getKey().getConstructor().render(renderer, elementData.getValue(), appliedElements);
             }
         }
 
@@ -254,20 +200,12 @@ public class Container extends Element {
 
         @Override
         public double getWidth(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
-            if(this.getComponent().isStaticWidth()) {
-                return this.getComponent().getWidth().getConstructor().getWidthValue(elementData, appliedElements);
-            } else {
-                return this.getComponent().getWidthModifier().getConstructor().getWidth(renderer, elementData, appliedElements);
-            }
+            return this.getComponent().getWidth().getConstructor().getWidthValue(renderer, elementData, appliedElements);
         }
 
         @Override
         public double getHeight(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
-            if(this.getComponent().isStaticHeight()) {
-                return this.getComponent().getHeight().getConstructor().getHeightValue(elementData, appliedElements);
-            } else {
-                return this.getComponent().getHeightModifier().getConstructor().getHeight(renderer, elementData, appliedElements);
-            }
+            return this.getComponent().getHeight().getConstructor().getHeightValue(renderer, elementData, appliedElements);
         }
 
         @Override

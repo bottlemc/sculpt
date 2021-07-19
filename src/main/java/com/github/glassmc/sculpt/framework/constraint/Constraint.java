@@ -1,7 +1,9 @@
 package com.github.glassmc.sculpt.framework.constraint;
 
+import com.github.glassmc.sculpt.framework.Color;
 import com.github.glassmc.sculpt.framework.Component;
 import com.github.glassmc.sculpt.framework.ElementData;
+import com.github.glassmc.sculpt.framework.Renderer;
 
 import java.util.List;
 
@@ -30,12 +32,20 @@ public abstract class Constraint extends Component {
             return elementData.getY();
         }
         
-        public double getWidthValue(ElementData elementData, List<ElementData> appliedElements) {
+        public double getWidthValue(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
             return elementData.getWidth();
         }
 
-        public double getHeightValue(ElementData elementData, List<ElementData> appliedElements) {
+        public double getHeightValue(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
             return elementData.getHeight();
+        }
+
+        public double getFontSizeValue(ElementData elementData, List<ElementData> appliedElements) {
+            return 0;
+        }
+
+        public Color getColorValue(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
+            return null;
         }
 
     }

@@ -3,6 +3,8 @@ package com.github.glassmc.sculpt.framework;
 import com.github.glassmc.sculpt.framework.backend.IBackend;
 import com.github.glassmc.sculpt.framework.element.Container;
 
+import java.util.ArrayList;
+
 public class Renderer {
 
     private final IBackend backend;
@@ -20,7 +22,7 @@ public class Renderer {
 
         ElementData fakeParent = new ElementData(null, 0, 0, 1, 1);
         ElementData elementData = new ElementData(fakeParent, width / 2, height / 2, width, height);
-        container.getConstructor().render(this, elementData);
+        container.getConstructor().render(this, elementData, new ArrayList<>());
 
         this.backend.postRender();
     }

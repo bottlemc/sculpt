@@ -1,6 +1,7 @@
 package com.github.glassmc.sculpt.framework.constraint;
 
 import com.github.glassmc.sculpt.framework.ElementData;
+import com.github.glassmc.sculpt.framework.Renderer;
 
 import java.util.List;
 
@@ -35,13 +36,13 @@ public class Relative extends Constraint {
         }
 
         @Override
-        public double getWidthValue(ElementData elementData, List<ElementData> appliedElements) {
+        public double getWidthValue(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
             double base = this.getComponent().isOtherAxis() ? elementData.getParentData().getHeight() : elementData.getParentData().getWidth();
             return base * this.getComponent().getPercent();
         }
 
         @Override
-        public double getHeightValue(ElementData elementData, List<ElementData> appliedElements) {
+        public double getHeightValue(Renderer renderer, ElementData elementData, List<ElementData> appliedElements) {
             double base = this.getComponent().isOtherAxis() ? elementData.getParentData().getWidth() : elementData.getParentData().getHeight();
             return base * this.getComponent().getPercent();
         }
