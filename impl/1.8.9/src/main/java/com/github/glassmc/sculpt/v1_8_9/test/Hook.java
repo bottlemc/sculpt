@@ -28,11 +28,9 @@ public class Hook {
             Font roboto = Font.createFont(Font.TRUETYPE_FONT, Objects.requireNonNull(Hook.class.getClassLoader().getResourceAsStream("Roboto-Regular.ttf")));
 
             container = new Container()
-                    .backgroundEnabled(true)
                     .backgroundColor(new Absolute(new Color(0.2, 0.2, 0.2)))
                     .getLayout(RegionLayout.class)
                     .add(new Container()
-                            .backgroundEnabled(true)
                             .backgroundColor(new Absolute(new Color(0.15, 0.15, 0.15)))
                             .width(new Relative(0.75, true))
                             .height(new Relative(0.9))
@@ -41,7 +39,6 @@ public class Hook {
                                 for(String category : servers.keySet()) {
                                     container1.getLayout(ListLayout.class)
                                             .add(new Container()
-                                                    .width(new Flexible())
                                                     .height(new Relative(0.05))
                                                     .padding(new Relative(0.0125))
                                                     .getLayout(RegionLayout.class)
@@ -52,9 +49,7 @@ public class Hook {
                                                             .color(new Absolute(new Color(0.8, 0.8, 0.8))),
                                                             RegionLayout.Region.LEFT)
                                                     .add(new Container()
-                                                            .backgroundEnabled(true)
                                                             .backgroundColor(new Absolute(new Color(0.8, 0.8, 0.8)))
-                                                            .width(new Flexible())
                                                             .height(new Absolute(1))
                                                             .padding(Element.Direction.LEFT, new Relative(0.05))
                                                             .padding(Element.Direction.RIGHT, new Relative(0.05)),
@@ -64,42 +59,31 @@ public class Hook {
                                     for(ServerData data : servers.get(category)) {
                                         container1.getLayout(ListLayout.class)
                                                 .add(new Container()
-                                                        .backgroundEnabled(true)
                                                         .backgroundColor(new Absolute(new Color(0.2, 0.2, 0.2)))
-                                                        .width(new Flexible())
                                                         .height(new Relative(0.15))
                                                         .padding(new Relative(0.0125))
                                                         .getLayout(RegionLayout.class)
                                                         .add(new Container()
-                                                                .backgroundEnabled(true)
                                                                 .backgroundColor(new Absolute(new Color(0.4, 0.4, 0.4)))
                                                                 .width(new Copy())
-                                                                .height(new Flexible())
                                                                 .padding(new Relative(0.0175)),
                                                                 RegionLayout.Region.LEFT)
                                                         .add(new Container()
-                                                                        .backgroundEnabled(true)
                                                                         .width(new Copy())
-                                                                        .height(new Flexible())
                                                                         .padding(new Relative(0.0175))
                                                                         .getLayout(RegionLayout.class)
                                                                         .add(new Container()
-                                                                                .backgroundEnabled(true)
                                                                                 .backgroundColor(new Hover(150, new Color(0.25, 0.25, 0.25), new Color(0.5, 0.5, 0.5)))
                                                                                 .width(new Hover(150, new Relative(0.3), new Relative(0.8)))
                                                                                 .height(new Relative(0.5)),
                                                                                 RegionLayout.Region.TOP)
                                                                         .add(new Container()
-                                                                                .backgroundEnabled(true)
                                                                                 .backgroundColor(new Absolute(new Color(0.25, 0.25, 0.25)))
-                                                                                .width(new Flexible())
                                                                                 .height(new Relative(0.5)),
                                                                                 RegionLayout.Region.BOTTOM)
                                                                         .getContainer(),
                                                                 RegionLayout.Region.RIGHT)
                                                         .add(new Container()
-                                                                        .width(new Flexible())
-                                                                        .height(new Flexible())
                                                                         .getLayout(RegionLayout.class)
                                                                         .add(new Text()
                                                                                 .size(new Relative(0.065))

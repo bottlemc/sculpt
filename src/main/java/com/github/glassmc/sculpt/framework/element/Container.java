@@ -37,6 +37,12 @@ public class Container extends Element {
         this.layout.setContainer(this);
         this.x.setElement(this);
         this.y.setElement(this);
+        this.width.setElement(this);
+        this.height.setElement(this);
+
+        for(Constraint padding : this.padding.values()) {
+            padding.setElement(this);
+        }
     }
 
     @SuppressWarnings("unused")
@@ -108,6 +114,7 @@ public class Container extends Element {
     public Container backgroundColor(Constraint backgroundColor) {
         this.backgroundColor = backgroundColor;
         backgroundColor.setElement(this);
+        this.backgroundEnabled = true;
         return this;
     }
 
