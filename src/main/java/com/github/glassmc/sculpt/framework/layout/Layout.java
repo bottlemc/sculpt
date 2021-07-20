@@ -24,7 +24,7 @@ public abstract class Layout extends Component {
     }
 
     @Override
-    public Layout.Constructor<? extends Layout> getConstructor() {
+    public Constructor<? extends Layout> getConstructor() {
         return (Constructor<? extends Layout>) super.getConstructor();
     }
 

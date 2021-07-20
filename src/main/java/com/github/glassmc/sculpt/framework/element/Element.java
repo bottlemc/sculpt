@@ -8,7 +8,7 @@ import java.util.List;
 
 public abstract class Element extends Component {
 
-    private Element parent;
+    private Container parent;
 
     public Element() {
         this.possibleConstructors.add(new Constructor<>());
@@ -19,11 +19,11 @@ public abstract class Element extends Component {
         return (Constructor<? extends Element>) super.getConstructor();
     }
 
-    public void setParent(Element parent) {
+    public void setParent(Container parent) {
         this.parent = parent;
     }
 
-    public Element getParent() {
+    public Container getParent() {
         return parent;
     }
 

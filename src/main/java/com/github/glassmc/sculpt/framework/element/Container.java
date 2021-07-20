@@ -2,6 +2,7 @@ package com.github.glassmc.sculpt.framework.element;
 
 import com.github.glassmc.sculpt.framework.Color;
 import com.github.glassmc.sculpt.framework.Renderer;
+import com.github.glassmc.sculpt.framework.Vector2D;
 import com.github.glassmc.sculpt.framework.constraint.*;
 import com.github.glassmc.sculpt.framework.layout.Layout;
 import com.github.glassmc.sculpt.framework.layout.RegionLayout;
@@ -31,6 +32,8 @@ public class Container extends Element {
         }
     };
     private final List<Element> children = new ArrayList<>();
+
+    private Consumer<Container> onClick;
 
     public Container() {
         this.possibleConstructors.add(new Constructor<>());
@@ -159,18 +162,44 @@ public class Container extends Element {
         return layoutClass.cast(this.layout);
     }
 
+    public Container onClick(Consumer<Container> onClick) {
+        this.onClick = onClick;
+        return this;
+    }
+
+    public Consumer<Container> getOnClick() {
+        return onClick;
+    }
+
     public Container apply(Consumer<Container> consumer) {
         consumer.accept(this);
         return this;
     }
 
+    @Override
+    public Constructor<? extends Container> getConstructor() {
+        return (Constructor<? extends Container>) super.getConstructor();
+    }
+
     public static class Constructor<T extends Container> extends Element.Constructor<T> {
+
+        private Color backgroundColor;
 
         @Override
         public void render(Renderer renderer, List<Element.Constructor<?>> parentAppliedElements) {
             Container container = this.getComponent();
             double width = this.getWidth();
             double height = this.getHeight();
+
+            this.backgroundColor = this.getComponent().getBackgroundColor().getConstructor().getColorValue(renderer, parentAppliedElements);
+
+            for(Vector2D vector2D : renderer.getBackend().getMouseClicks()) {
+                if(this.isOnTop(vector2D, this)) {
+                    if(container.getOnClick() != null) {
+                        container.getOnClick().accept(this.getComponent());
+                    }
+                }
+            }
 
             if(container.isBackgroundEnabled()) {
                 Color color = container.getBackgroundColor().getConstructor().getColorValue(renderer, parentAppliedElements);
@@ -216,7 +245,7 @@ public class Container extends Element {
 
         @Override
         protected void computePaddings() {
-            for(Element.Direction direction : Element.Direction.values()) {
+            for(Direction direction : Direction.values()) {
                 this.computePaddings(direction, this.getComponent().getPadding(direction));
             }
         }
@@ -298,6 +327,10 @@ public class Container extends Element {
 
         protected void applyElementYRequest(Element.Constructor<?> element, List<Element.Constructor<?>> appliedElements) {
             element.setY(element.getYConstraint().getConstructor().getYValue(appliedElements));
+        }
+
+        public Color getBackgroundColor() {
+            return backgroundColor;
         }
 
     }

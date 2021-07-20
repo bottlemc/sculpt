@@ -3,12 +3,15 @@ package com.github.glassmc.sculpt.v1_8_9.test;
 import com.github.glassmc.loader.GlassLoader;
 import com.github.glassmc.sculpt.Sculpt;
 import com.github.glassmc.sculpt.framework.Color;
+import com.github.glassmc.sculpt.framework.Vector2D;
+import com.github.glassmc.sculpt.framework.backend.IBackend;
 import com.github.glassmc.sculpt.framework.constraint.*;
 import com.github.glassmc.sculpt.framework.element.Container;
-import com.github.glassmc.sculpt.framework.element.Element;
-import com.github.glassmc.sculpt.framework.element.Text;
-import com.github.glassmc.sculpt.framework.layout.ListLayout;
-import com.github.glassmc.sculpt.framework.layout.RegionLayout;
+import com.github.glassmc.sculpt.framework.layout.StageLayout;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.util.Window;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.Display;
 
 import java.awt.*;
 import java.io.IOException;
@@ -27,7 +30,7 @@ public class Hook {
         if(container == null) {
             Font roboto = Font.createFont(Font.TRUETYPE_FONT, Objects.requireNonNull(Hook.class.getClassLoader().getResourceAsStream("Roboto-Regular.ttf")));
 
-            container = new Container()
+            /*container = new Container()
                     .backgroundColor(new Absolute(new Color(0.2, 0.2, 0.2)))
                     .getLayout(RegionLayout.class)
                     .add(new Container()
@@ -108,10 +111,36 @@ public class Hook {
                                 }
                             }),
                             RegionLayout.Region.CENTER)
+                    .getContainer();*/
+
+            container = new Container()
+                    .layout(new StageLayout())
+                    .getLayout(StageLayout.class)
+                    .add("First", new Container()
+                            .backgroundColor(new Absolute(new Color(1., 1., 1.)))
+                            .onClick(container -> {
+                                    container.getParent().getLayout(StageLayout.class).setCurrentStage("Second");
+                             }))
+                    .add("Second", new Container()
+                            .backgroundColor(new Absolute(new Color(0., 0., 0.)))
+                            .onClick(container -> {
+                                container.getParent().getLayout(StageLayout.class).setCurrentStage("First");
+                            }))
+                    .setCurrentStage("Second")
                     .getContainer();
         }
 
         GlassLoader.getInstance().getAPI(Sculpt.class).render(container);
+    }
+
+    @SuppressWarnings("unused")
+    public static void onClick() {
+        if(Mouse.getEventButton() != -1 && Mouse.getEventButtonState()) {
+            Window window = new Window(MinecraftClient.getInstance());
+            double mouseX = (double) Mouse.getX() / Display.getWidth() * window.getScaledWidth();
+            double mouseY = window.getScaledHeight() - ((double) Mouse.getY() / Display.getHeight() * window.getScaledHeight());
+            GlassLoader.getInstance().getInterface(IBackend.class).getMouseClicks().add(new Vector2D(mouseX, mouseY));
+        }
     }
 
     private static class ServerData {

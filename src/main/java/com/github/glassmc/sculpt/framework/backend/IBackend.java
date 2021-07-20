@@ -4,6 +4,7 @@ import com.github.glassmc.sculpt.framework.Color;
 import com.github.glassmc.sculpt.framework.Vector2D;
 
 import java.awt.*;
+import java.util.List;
 
 public interface IBackend {
 
@@ -18,5 +19,7 @@ public interface IBackend {
     void postRender();
 
     Vector2D getMouseLocation();
+
+    List<Vector2D> getMouseClicks();
 
 }

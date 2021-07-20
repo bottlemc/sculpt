@@ -27,17 +27,17 @@ public class Side extends Constraint {
 
         @Override
         public double getXValue(List<Element.Constructor<?>> appliedElements) {
-            Side.Direction direction = this.getComponent().getDirection();
+            Direction direction = this.getComponent().getDirection();
 
             Element.Constructor<?> constructor = this.getComponent().getElement().getConstructor();
 
             Pair<Double, Double> maxLeftRight = this.getMaximumExtension(constructor, appliedElements, Axis.X);
             if(maxLeftRight != null) {
-                if(direction == Side.Direction.NEGATIVE) {
+                if(direction == Direction.NEGATIVE) {
                    return maxLeftRight.getKey() + constructor.getWidth() / 2;
-                } else if(direction == Side.Direction.ZERO) {
+                } else if(direction == Direction.ZERO) {
                     return (maxLeftRight.getKey() + maxLeftRight.getValue()) / 2;
-                } else if(direction == Side.Direction.POSITIVE) {
+                } else if(direction == Direction.POSITIVE) {
                     return maxLeftRight.getValue() - constructor.getWidth() / 2;
                 }
             }
@@ -47,17 +47,17 @@ public class Side extends Constraint {
 
         @Override
         public double getYValue(List<Element.Constructor<?>> appliedElements) {
-            Side.Direction direction = this.getComponent().getDirection();
+            Direction direction = this.getComponent().getDirection();
 
             Element.Constructor<?> constructor = this.getComponent().getElement().getConstructor();
 
             Pair<Double, Double> maxTopBottom = this.getMaximumExtension(constructor, appliedElements, Axis.Y);
             if(maxTopBottom != null) {
-                if(direction == Side.Direction.NEGATIVE) {
+                if(direction == Direction.NEGATIVE) {
                     return maxTopBottom.getKey() + constructor.getHeight() / 2;
-                } else if(direction == Side.Direction.ZERO) {
+                } else if(direction == Direction.ZERO) {
                     return (maxTopBottom.getKey() + maxTopBottom.getValue()) / 2;
-                } else if(direction == Side.Direction.POSITIVE) {
+                } else if(direction == Direction.POSITIVE) {
                     return maxTopBottom.getValue() - constructor.getHeight() / 2;
                 }
             }

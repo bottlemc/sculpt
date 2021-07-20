@@ -130,7 +130,7 @@ public class Text extends Element {
 
         @Override
         protected void computePaddings() {
-            for(Element.Direction direction : Element.Direction.values()) {
+            for(Direction direction : Direction.values()) {
                 this.computePaddings(direction, this.getComponent().getPadding(direction));
             }
         }

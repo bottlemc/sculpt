@@ -53,7 +53,7 @@ public class Hover extends Constraint {
             long previousUpdateDelta = System.currentTimeMillis() - previousUpdate;
 
             if(previousUpdate != 0) {
-                if(this.isHovering(renderer.getBackend().getMouseLocation(), this.getComponent().getElement().getConstructor())) {
+                if(this.isOnTop(renderer.getBackend().getMouseLocation(), this.getComponent().getElement().getConstructor())) {
                     timeCache += previousUpdateDelta;
                 } else {
                     timeCache -= previousUpdateDelta;
@@ -91,13 +91,6 @@ public class Hover extends Constraint {
             double finalHeight = ((Constraint) data[1]).getConstructor().getHeightValue(renderer, appliedElements);
             double percent = (double) timeCache / this.getComponent().getTime();
             return (finalHeight - initialHeight) * percent + initialHeight;
-        }
-
-        private boolean isHovering(Vector2D mouseLocation, Element.Constructor<?> elementData) {
-            return mouseLocation.getFirst() > elementData.getCalculatedX() - elementData.getWidth() / 2 &&
-                    mouseLocation.getFirst() < elementData.getCalculatedX() + elementData.getWidth() / 2 &&
-                    mouseLocation.getSecond() > elementData.getCalculatedY() - elementData.getHeight() / 2 &&
-                    mouseLocation.getSecond() < elementData.getCalculatedY() + elementData.getHeight() / 2;
         }
 
     }

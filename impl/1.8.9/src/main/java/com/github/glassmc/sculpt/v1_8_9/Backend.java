@@ -17,12 +17,16 @@ import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Backend implements IBackend {
 
     private final Map<String, FontRenderer> fontCache = new HashMap<>();
+
+    private List<Vector2D> mouseClicks = new ArrayList<>();
 
     @Override
     public Vector2D getDimension() {
@@ -96,7 +100,7 @@ public class Backend implements IBackend {
 
     @Override
     public void postRender() {
-
+        this.mouseClicks.clear();
     }
 
     @Override
@@ -105,6 +109,11 @@ public class Backend implements IBackend {
         double mouseX = (double) Mouse.getX() / Display.getWidth() * window.getScaledWidth();
         double mouseY = window.getScaledHeight() - ((double) Mouse.getY() / Display.getHeight() * window.getScaledHeight());
         return new Vector2D(mouseX, mouseY);
+    }
+
+    @Override
+    public List<Vector2D> getMouseClicks() {
+        return mouseClicks;
     }
 
 }

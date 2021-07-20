@@ -12,16 +12,45 @@ import org.objectweb.asm.tree.MethodNode;
 
 public class SculptTransformer implements ITransformer {
 
+    private final String MINECRAFT_CLIENT = Identifier.parse("net/minecraft/client/MinecraftClient").getClassName();
     private final String GAME_RENDERER = Identifier.parse("net/minecraft/client/render/GameRenderer").getClassName();
+    private final String SCREEN = Identifier.parse("net/minecraft/client/gui/screen/Screen").getClassName();
 
     @Override
     public byte[] transform(String name, byte[] data) {
+        if(name.equals(MINECRAFT_CLIENT)) {
+            ClassNode classNode = this.getClassNode(data);
+            this.transformMinecraftClient(classNode);
+            return this.getData(classNode);
+        }
         if(name.equals(GAME_RENDERER)) {
             ClassNode classNode = this.getClassNode(data);
             this.transformGameRenderer(classNode);
             return this.getData(classNode);
         }
+        if(name.equals(SCREEN)) {
+            ClassNode classNode = this.getClassNode(data);
+            this.transformScreen(classNode);
+            return this.getData(classNode);
+        }
         return data;
+    }
+
+    private void transformMinecraftClient(ClassNode classNode) {
+        Identifier tick = Identifier.parse("net/minecraft/client/MinecraftClient#tick()V");
+        String renderName = tick.getMethodName();
+        String renderDescription = tick.getMethodDesc();
+
+        for(MethodNode methodNode : classNode.methods) {
+            if(methodNode.name.equals(renderName) && methodNode.desc.equals(renderDescription)) {
+                for(AbstractInsnNode node : methodNode.instructions.toArray()) {
+                    if(node instanceof MethodInsnNode && ((MethodInsnNode) node).name.equals("getEventButton")) {
+                        MethodInsnNode insert = new MethodInsnNode(Opcodes.INVOKESTATIC, Hook.class.getName().replace(".", "/"), "onClick", "()V");
+                        methodNode.instructions.insertBefore(node, insert);
+                    }
+                }
+            }
+        }
     }
 
     private void transformGameRenderer(ClassNode classNode) {
@@ -37,6 +66,19 @@ public class SculptTransformer implements ITransformer {
                         methodNode.instructions.insertBefore(node, insert);
                     }
                 }
+            }
+        }
+    }
+
+    private void transformScreen(ClassNode classNode) {
+        Identifier render = Identifier.parse("net/minecraft/client/gui/screen/Screen#handleMouse()V");
+        String renderName = render.getMethodName();
+        String renderDescription = render.getMethodDesc();
+
+        for(MethodNode methodNode : classNode.methods) {
+            if(methodNode.name.equals(renderName) && methodNode.desc.equals(renderDescription)) {
+                MethodInsnNode insert = new MethodInsnNode(Opcodes.INVOKESTATIC, Hook.class.getName().replace(".", "/"), "onClick", "()V");
+                methodNode.instructions.insert(insert);
             }
         }
     }

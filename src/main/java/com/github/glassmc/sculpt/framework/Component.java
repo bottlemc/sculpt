@@ -43,7 +43,7 @@ public class Component {
                 double maxRight = Double.MAX_VALUE;
 
                 for(Element.Constructor<?> appliedElement : appliedElements) {
-                    Component.Constructor.MaxPaddingComputer maxPadding = new Container.Constructor.MaxPaddingComputer(element, appliedElement);
+                    MaxPaddingComputer maxPadding = new MaxPaddingComputer(element, appliedElement);
 
                     if(this.intersect(element, appliedElement, Axis.X)) {
                         if(element.getX() > appliedElement.getX()) {
@@ -60,7 +60,7 @@ public class Component {
                 double maxBottom = Double.MAX_VALUE;
 
                 for(Element.Constructor<?> appliedElement : appliedElements) {
-                    Container.Constructor.MaxPaddingComputer maxPadding = new Container.Constructor.MaxPaddingComputer(element, appliedElement);
+                    MaxPaddingComputer maxPadding = new MaxPaddingComputer(element, appliedElement);
 
                     if(this.intersect(element, appliedElement, Axis.Y)) {
                         if(element.getY() > appliedElement.getY()) {
@@ -91,6 +91,13 @@ public class Component {
                 return intersectY;
             }
             return intersectX && intersectY;
+        }
+
+        protected boolean isOnTop(Vector2D mouseLocation, Element.Constructor<?> elementData) {
+            return mouseLocation.getFirst() > elementData.getCalculatedX() - elementData.getWidth() / 2 &&
+                    mouseLocation.getFirst() < elementData.getCalculatedX() + elementData.getWidth() / 2 &&
+                    mouseLocation.getSecond() > elementData.getCalculatedY() - elementData.getHeight() / 2 &&
+                    mouseLocation.getSecond() < elementData.getCalculatedY() + elementData.getHeight() / 2;
         }
 
         protected static class MaxPaddingComputer {

@@ -53,11 +53,11 @@ public class RegionLayout extends Layout {
 
         @Override
         public List<Element.Constructor<?>> getDefaultElements() {
-            Map<RegionLayout.Region, List<Element>> regionMap = this.getComponent().getRegionMap();
+            Map<Region, List<Element>> regionMap = this.getComponent().getRegionMap();
             List<Element.Constructor<?>> defaultElements = new ArrayList<>();
             for(Element element : this.getComponent().getContainer().getChildren()) {
-                RegionLayout.Region region = null;
-                for(RegionLayout.Region tempRegion : regionMap.keySet()) {
+                Region region = null;
+                for(Region tempRegion : regionMap.keySet()) {
                     if(regionMap.get(tempRegion).contains(element)) {
                         region = tempRegion;
                     }

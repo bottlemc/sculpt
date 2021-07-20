@@ -1,5 +1,6 @@
 package com.github.glassmc.sculpt.framework.constraint;
 
+import com.github.glassmc.sculpt.framework.Color;
 import com.github.glassmc.sculpt.framework.Pair;
 import com.github.glassmc.sculpt.framework.Renderer;
 import com.github.glassmc.sculpt.framework.element.Element;
@@ -37,6 +38,11 @@ public class Flexible extends Constraint {
                 }
             }
             return this.getComponent().getElement().getConstructor().getHeight();
+        }
+
+        @Override
+        public Color getColorValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
+            return this.getComponent().getElement().getParent().getConstructor().getBackgroundColor();
         }
 
     }

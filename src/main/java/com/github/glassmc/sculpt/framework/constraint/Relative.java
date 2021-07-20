@@ -1,5 +1,6 @@
 package com.github.glassmc.sculpt.framework.constraint;
 
+import com.github.glassmc.sculpt.framework.Color;
 import com.github.glassmc.sculpt.framework.Renderer;
 import com.github.glassmc.sculpt.framework.element.Element;
 
