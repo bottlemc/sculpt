@@ -24,13 +24,13 @@ public class Hook {
 
     @SuppressWarnings("unused")
     public static void onRender() throws IOException, FontFormatException {
-        Map<String, List<ServerData>> servers = new HashMap<>();
+        /*Map<String, List<ServerData>> servers = new HashMap<>();
         servers.put("Test Category", Collections.singletonList(new ServerData("Test Server", "Test Description")));
 
         if(container == null) {
             Font roboto = Font.createFont(Font.TRUETYPE_FONT, Objects.requireNonNull(Hook.class.getClassLoader().getResourceAsStream("Roboto-Regular.ttf")));
 
-            /*container = new Container()
+            container = new Container()
                     .backgroundColor(new Absolute(new Color(0.2, 0.2, 0.2)))
                     .getLayout(RegionLayout.class)
                     .add(new Container()
@@ -111,7 +111,7 @@ public class Hook {
                                 }
                             }),
                             RegionLayout.Region.CENTER)
-                    .getContainer();*/
+                    .getContainer();
 
             container = new Container()
                     .layout(new StageLayout())
@@ -130,7 +130,7 @@ public class Hook {
                     .getContainer();
         }
 
-        GlassLoader.getInstance().getAPI(Sculpt.class).render(container);
+        GlassLoader.getInstance().getAPI(Sculpt.class).render(container);*/
     }
 
     @SuppressWarnings("unused")
