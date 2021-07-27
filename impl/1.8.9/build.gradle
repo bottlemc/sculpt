@@ -1,4 +1,3 @@
-apply plugin: 'java-library'
 apply plugin: 'kiln-standard'
 
 import static com.github.glassmc.kiln.standard.DependencyHandlerExtension.*
@@ -19,5 +18,3 @@ dependencies {
 
     api 'org.ow2.asm:asm-tree:9.2'
 }
-
-compileJava.dependsOn("processResources")

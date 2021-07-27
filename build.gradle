@@ -7,12 +7,11 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.github.glassmc:kiln:v0.4.1'
+        classpath 'com.github.glassmc:kiln:v0.4.9'
     }
 }
 
-apply plugin: 'java-library'
-apply plugin: 'kiln-standard'
+apply plugin: 'kiln-main'
 
 sourceCompatibility = targetCompatibility = 1.8
 
@@ -24,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.glassmc.loader:loader:v0.4.0'
+    implementation 'com.github.glassmc.loader:loader:v0.4.2'
 }
 
 compileJava.dependsOn("processResources")
