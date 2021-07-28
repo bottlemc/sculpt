@@ -11,6 +11,10 @@ public class Color {
 
     private final double red, green, blue, alpha;
 
+    public Color() {
+        this(1.0, 1.0, 1.0, 1.0);
+    }
+
     public Color(int red, int green, int blue) {
         this(red, green, blue, 255);
     }

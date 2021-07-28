@@ -1,6 +1,5 @@
 package com.github.glassmc.sculpt.framework.constraint;
 
-import com.github.glassmc.sculpt.framework.Color;
 import com.github.glassmc.sculpt.framework.Renderer;
 import com.github.glassmc.sculpt.framework.element.Element;
 
@@ -48,6 +47,11 @@ public class Relative extends Constraint {
             Element.Constructor<?> parent = this.getComponent().getElement().getParent().getConstructor();
             double base = this.getComponent().isOtherAxis() ? parent.getWidth() : parent.getHeight();
             return base * this.getComponent().getPercent();
+        }
+
+        @Override
+        public double getCornerRadiusValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
+            return this.getComponent().getElement().getParent().getConstructor().getWidth() * this.getComponent().getPercent();
         }
 
         @Override

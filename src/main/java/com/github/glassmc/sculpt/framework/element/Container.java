@@ -31,6 +31,9 @@ public class Container extends Element {
             }
         }
     };
+
+    private Constraint cornerRadius = new Flexible();
+
     private final List<Element> children = new ArrayList<>();
 
     private Consumer<Container> onClick;
@@ -101,6 +104,16 @@ public class Container extends Element {
 
     public Constraint getHeight() {
         return height;
+    }
+
+    public Container cornerRadius(Constraint cornerRadius) {
+        this.cornerRadius = cornerRadius;
+        cornerRadius.setElement(this);
+        return this;
+    }
+
+    public Constraint getCornerRadius() {
+        return cornerRadius;
     }
 
     @SuppressWarnings("unused")
@@ -184,12 +197,15 @@ public class Container extends Element {
     public static class Constructor<T extends Container> extends Element.Constructor<T> {
 
         private Color backgroundColor;
+        private double cornerRadius;
 
         @Override
         public void render(Renderer renderer, List<Element.Constructor<?>> parentAppliedElements) {
             Container container = this.getComponent();
             double width = this.getWidth();
             double height = this.getHeight();
+
+            this.cornerRadius = this.getComponent().getCornerRadius().getConstructor().getCornerRadiusValue(renderer, parentAppliedElements);
 
             this.backgroundColor = this.getComponent().getBackgroundColor().getConstructor().getColorValue(renderer, parentAppliedElements);
 
@@ -203,7 +219,7 @@ public class Container extends Element {
 
             if(container.isBackgroundEnabled()) {
                 Color color = container.getBackgroundColor().getConstructor().getColorValue(renderer, parentAppliedElements);
-                renderer.getBackend().drawRectangle(this.getCalculatedX(), this.getCalculatedY(), width, height, color);
+                renderer.getBackend().drawRectangle(this.getCalculatedX(), this.getCalculatedY(), width, height, this.cornerRadius, color);
             }
 
             Layout layout = container.getLayout();

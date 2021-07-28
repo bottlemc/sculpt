@@ -50,6 +50,10 @@ public abstract class Constraint extends Component {
             return this.getComponent().getElement().getConstructor().getHeight();
         }
 
+        public double getCornerRadiusValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
+            return 0;
+        }
+
         public double getFontSizeValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
             return 0;
         }

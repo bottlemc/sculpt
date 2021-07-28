@@ -45,6 +45,11 @@ public class Absolute extends Constraint {
         }
 
         @Override
+        public double getCornerRadiusValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
+            return (double) super.getComponent().getValue();
+        }
+
+        @Override
         public Color getColorValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
             return (Color) super.getComponent().getValue();
         }
