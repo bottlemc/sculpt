@@ -29,6 +29,12 @@ public class Backend implements IBackend {
     private List<Vector2D> mouseClicks = new ArrayList<>();
 
     @Override
+    public Vector2D getLocation() {
+        Vector2D dimension = this.getDimension();
+        return new Vector2D(dimension.getFirst() / 2, dimension.getSecond() / 2);
+    }
+
+    @Override
     public Vector2D getDimension() {
         Window window = new Window(MinecraftClient.getInstance());
         return new Vector2D(window.getScaledWidth(), window.getScaledHeight());

@@ -17,13 +17,17 @@ public class Renderer {
     public void render(Container container) {
         this.backend.preRender();
 
+        Vector2D location = this.backend.getLocation();
+        double x = location.getFirst();
+        double y = location.getSecond();
+
         Vector2D dimension = this.backend.getDimension();
         double width = dimension.getFirst();
         double height = dimension.getSecond();
 
         Element.Constructor<?> constructor = container.getConstructor();
-        constructor.setX(width / 2);
-        constructor.setY(height / 2);
+        constructor.setX(x);
+        constructor.setY(y);
         constructor.setWidth(width);
         constructor.setHeight(height);
         container.getConstructor().render(this, new ArrayList<>());

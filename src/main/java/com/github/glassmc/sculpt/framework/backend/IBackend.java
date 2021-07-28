@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface IBackend {
 
+    Vector2D getLocation();
     Vector2D getDimension();
 
     void preRender();
