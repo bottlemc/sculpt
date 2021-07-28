@@ -1,5 +1,5 @@
 id = "sculpt"
-version = "0.2.1"
+version = "0.2.2"
 namespace = "com.github.glassmc.sculpt"
 
 implementations = [
