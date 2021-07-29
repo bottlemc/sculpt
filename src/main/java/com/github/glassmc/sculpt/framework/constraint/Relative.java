@@ -36,6 +36,20 @@ public class Relative extends Constraint {
         }
 
         @Override
+        public double getXValue(List<Element.Constructor<?>> appliedElements) {
+            Element.Constructor<?> parent = this.getComponent().getElement().getParent().getConstructor();
+            double base = this.getComponent().isOtherAxis() ? parent.getHeight() : parent.getWidth();
+            return base * this.getComponent().getPercent();
+        }
+
+        @Override
+        public double getYValue(List<Element.Constructor<?>> appliedElements) {
+            Element.Constructor<?> parent = this.getComponent().getElement().getParent().getConstructor();
+            double base = this.getComponent().isOtherAxis() ? parent.getWidth() : parent.getHeight();
+            return base * this.getComponent().getPercent();
+        }
+
+        @Override
         public double getWidthValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
             Element.Constructor<?> parent = this.getComponent().getElement().getParent().getConstructor();
             double base = this.getComponent().isOtherAxis() ? parent.getHeight() : parent.getWidth();

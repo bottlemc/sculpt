@@ -45,7 +45,7 @@ public class SculptTransformer implements ITransformer {
             if(methodNode.name.equals(renderName) && methodNode.desc.equals(renderDescription)) {
                 for(AbstractInsnNode node : methodNode.instructions.toArray()) {
                     if(node instanceof MethodInsnNode && ((MethodInsnNode) node).name.equals("getEventButton")) {
-                        MethodInsnNode insert = new MethodInsnNode(Opcodes.INVOKESTATIC, Hook.class.getName().replace(".", "/"), "onClick", "()V");
+                        MethodInsnNode insert = new MethodInsnNode(Opcodes.INVOKESTATIC, Hook.class.getName().replace(".", "/"), "onAction", "()V");
                         methodNode.instructions.insertBefore(node, insert);
                     }
                 }
@@ -77,7 +77,7 @@ public class SculptTransformer implements ITransformer {
 
         for(MethodNode methodNode : classNode.methods) {
             if(methodNode.name.equals(renderName) && methodNode.desc.equals(renderDescription)) {
-                MethodInsnNode insert = new MethodInsnNode(Opcodes.INVOKESTATIC, Hook.class.getName().replace(".", "/"), "onClick", "()V");
+                MethodInsnNode insert = new MethodInsnNode(Opcodes.INVOKESTATIC, Hook.class.getName().replace(".", "/"), "onAction", "()V");
                 methodNode.instructions.insert(insert);
             }
         }

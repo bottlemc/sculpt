@@ -1,6 +1,7 @@
 package com.github.glassmc.sculpt.framework.element;
 
 import com.github.glassmc.sculpt.framework.Color;
+import com.github.glassmc.sculpt.framework.MouseAction;
 import com.github.glassmc.sculpt.framework.Renderer;
 import com.github.glassmc.sculpt.framework.Vector2D;
 import com.github.glassmc.sculpt.framework.constraint.*;
@@ -34,9 +35,12 @@ public class Container extends Element {
 
     private Constraint cornerRadius = new Flexible();
 
+    private boolean adjustElements = true;
+
     private final List<Element> children = new ArrayList<>();
 
     private Consumer<Container> onClick;
+    private Consumer<Container> onRelease;
 
     public Container() {
         this.possibleConstructors.add(new Constructor<>());
@@ -158,6 +162,15 @@ public class Container extends Element {
         return padding.get(direction);
     }
 
+    public Container adjustElements(boolean adjustElements) {
+        this.adjustElements = adjustElements;
+        return this;
+    }
+
+    public boolean isAdjustElements() {
+        return adjustElements;
+    }
+
     @SuppressWarnings("unused")
     public Container layout(Layout layout) {
         this.layout = layout;
@@ -184,6 +197,15 @@ public class Container extends Element {
         return onClick;
     }
 
+    public Container onRelease(Consumer<Container> onRelease) {
+        this.onRelease = onRelease;
+        return this;
+    }
+
+    public Consumer<Container> getOnRelease() {
+        return onRelease;
+    }
+
     public Container apply(Consumer<Container> consumer) {
         consumer.accept(this);
         return this;
@@ -199,6 +221,8 @@ public class Container extends Element {
         private Color backgroundColor;
         private double cornerRadius;
 
+        private boolean held = false;
+
         @Override
         public void render(Renderer renderer, List<Element.Constructor<?>> parentAppliedElements) {
             Container container = this.getComponent();
@@ -209,11 +233,17 @@ public class Container extends Element {
 
             this.backgroundColor = this.getComponent().getBackgroundColor().getConstructor().getColorValue(renderer, parentAppliedElements);
 
-            for(Vector2D vector2D : renderer.getBackend().getMouseClicks()) {
-                if(this.isOnTop(vector2D, this)) {
+            for(MouseAction action : renderer.getBackend().getMouseActions()) {
+                if(action.getType() == MouseAction.Type.CLICK && this.isOnTop(action.getLocation(), this)) {
                     if(container.getOnClick() != null) {
                         container.getOnClick().accept(this.getComponent());
                     }
+                    this.held = true;
+                } else if(action.getType() == MouseAction.Type.RELEASE) {
+                    if(container.getOnRelease() != null) {
+                        container.getOnRelease().accept(this.getComponent());
+                    }
+                    this.held = false;
                 }
             }
 
@@ -233,13 +263,15 @@ public class Container extends Element {
             appliedElements.add(this.createPseudoConstructor(0, height, width * 16, height));
 
             for(Element.Constructor<?> element : layoutElementData) {
-                this.computeChildPaddings(element);
-                for(int i = 0; i < 3; i++) {
-                    this.adjustElementPosition(element, appliedElements);
-                    this.applyElementSizeRequests(renderer, element, appliedElements);
+                if (this.getComponent().isAdjustElements()) {
+                    this.computeChildPaddings(element);
+                    for(int i = 0; i < 3; i++) {
+                        this.adjustElementPosition(element, appliedElements);
+                        this.applyElementSizeRequests(renderer, element, appliedElements);
+                    }
                 }
-                this.applyElementPositionRequests(element, appliedElements);
 
+                this.applyElementPositionRequests(element, appliedElements);
                 appliedElements.add(element);
 
                 element.render(renderer, appliedElements);

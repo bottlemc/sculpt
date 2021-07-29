@@ -1,6 +1,7 @@
 package com.github.glassmc.sculpt.v1_8_9;
 
 import com.github.glassmc.sculpt.framework.Color;
+import com.github.glassmc.sculpt.framework.MouseAction;
 import com.github.glassmc.sculpt.framework.Vector2D;
 import com.github.glassmc.sculpt.framework.backend.Button;
 import com.github.glassmc.sculpt.framework.backend.IBackend;
@@ -27,7 +28,7 @@ public class Backend implements IBackend {
 
     private final Map<String, FontRenderer> fontCache = new HashMap<>();
 
-    private List<Vector2D> mouseClicks = new ArrayList<>();
+    private List<MouseAction> mouseActions = new ArrayList<>();
 
     @Override
     public Vector2D getLocation() {
@@ -107,7 +108,7 @@ public class Backend implements IBackend {
 
     @Override
     public void postRender() {
-        this.mouseClicks.clear();
+        this.mouseActions.clear();
     }
 
     @Override
@@ -133,8 +134,8 @@ public class Backend implements IBackend {
     }
 
     @Override
-    public List<Vector2D> getMouseClicks() {
-        return mouseClicks;
+    public List<MouseAction> getMouseActions() {
+        return mouseActions;
     }
 
 }

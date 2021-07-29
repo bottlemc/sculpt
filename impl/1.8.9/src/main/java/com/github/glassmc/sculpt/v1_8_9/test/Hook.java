@@ -2,6 +2,7 @@ package com.github.glassmc.sculpt.v1_8_9.test;
 
 import com.github.glassmc.loader.GlassLoader;
 import com.github.glassmc.sculpt.framework.Color;
+import com.github.glassmc.sculpt.framework.MouseAction;
 import com.github.glassmc.sculpt.framework.Vector2D;
 import com.github.glassmc.sculpt.framework.backend.IBackend;
 import com.github.glassmc.sculpt.framework.constraint.*;
@@ -133,12 +134,12 @@ public class Hook {
     }
 
     @SuppressWarnings("unused")
-    public static void onClick() {
-        if(Mouse.getEventButton() != -1 && Mouse.getEventButtonState()) {
+    public static void onAction() {
+        if(Mouse.getEventButton() != -1) {
             Window window = new Window(MinecraftClient.getInstance());
             double mouseX = (double) Mouse.getX() / Display.getWidth() * window.getScaledWidth();
             double mouseY = window.getScaledHeight() - ((double) Mouse.getY() / Display.getHeight() * window.getScaledHeight());
-            GlassLoader.getInstance().getInterface(IBackend.class).getMouseClicks().add(new Vector2D(mouseX, mouseY));
+            GlassLoader.getInstance().getInterface(IBackend.class).getMouseActions().add(new MouseAction(Mouse.getEventButtonState() ? MouseAction.Type.CLICK : MouseAction.Type.RELEASE, new Vector2D(mouseX, mouseY)));
         }
     }
 

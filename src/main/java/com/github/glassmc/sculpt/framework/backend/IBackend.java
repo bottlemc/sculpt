@@ -1,6 +1,7 @@
 package com.github.glassmc.sculpt.framework.backend;
 
 import com.github.glassmc.sculpt.framework.Color;
+import com.github.glassmc.sculpt.framework.MouseAction;
 import com.github.glassmc.sculpt.framework.Vector2D;
 
 import java.awt.*;
@@ -22,6 +23,6 @@ public interface IBackend {
     Vector2D getMouseLocation();
     boolean isMouseDown(Button button);
 
-    List<Vector2D> getMouseClicks();
+    List<MouseAction> getMouseActions();
 
 }
