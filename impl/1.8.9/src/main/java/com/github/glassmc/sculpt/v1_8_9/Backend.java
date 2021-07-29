@@ -2,6 +2,7 @@ package com.github.glassmc.sculpt.v1_8_9;
 
 import com.github.glassmc.sculpt.framework.Color;
 import com.github.glassmc.sculpt.framework.Vector2D;
+import com.github.glassmc.sculpt.framework.backend.Button;
 import com.github.glassmc.sculpt.framework.backend.IBackend;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
@@ -115,6 +116,20 @@ public class Backend implements IBackend {
         double mouseX = (double) Mouse.getX() / Display.getWidth() * window.getScaledWidth();
         double mouseY = window.getScaledHeight() - ((double) Mouse.getY() / Display.getHeight() * window.getScaledHeight());
         return new Vector2D(mouseX, mouseY);
+    }
+
+    @Override
+    public boolean isMouseDown(Button button) {
+        int buttonId = 0;
+        switch (button) {
+            case PRIMARY:
+                buttonId = 0;
+                break;
+            case SECONDARY:
+                buttonId = 1;
+                break;
+        }
+        return Mouse.isButtonDown(buttonId);
     }
 
     @Override

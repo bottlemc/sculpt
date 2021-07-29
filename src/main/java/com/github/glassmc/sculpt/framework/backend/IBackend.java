@@ -20,6 +20,7 @@ public interface IBackend {
     void postRender();
 
     Vector2D getMouseLocation();
+    boolean isMouseDown(Button button);
 
     List<Vector2D> getMouseClicks();
 
