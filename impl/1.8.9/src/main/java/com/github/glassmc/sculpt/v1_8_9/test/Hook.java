@@ -1,12 +1,14 @@
 package com.github.glassmc.sculpt.v1_8_9.test;
 
 import com.github.glassmc.loader.GlassLoader;
+import com.github.glassmc.sculpt.Sculpt;
 import com.github.glassmc.sculpt.framework.Color;
 import com.github.glassmc.sculpt.framework.MouseAction;
 import com.github.glassmc.sculpt.framework.Vector2D;
 import com.github.glassmc.sculpt.framework.backend.IBackend;
 import com.github.glassmc.sculpt.framework.constraint.*;
 import com.github.glassmc.sculpt.framework.element.Container;
+import com.github.glassmc.sculpt.framework.layout.RegionLayout;
 import com.github.glassmc.sculpt.framework.layout.StageLayout;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Window;
@@ -114,23 +116,25 @@ public class Hook {
                     .getContainer();*/
 
             container = new Container()
-                    .layout(new StageLayout())
-                    .getLayout(StageLayout.class)
-                    .add("First", new Container()
-                            .backgroundColor(new Hover(500, new Color(1., 1., 1.), new Color(0.5, 0.5, 0.5)))
-                            .onClick(container -> {
-                                    container.getParent().getLayout(StageLayout.class).setCurrentStage("Second");
-                             }))
-                    .add("Second", new Container()
-                            .backgroundColor(new Hover(500, new Color(0., 0., 0.), new Color(0.5, 0.5, 0.5)))
-                            .onClick(container -> {
-                                container.getParent().getLayout(StageLayout.class).setCurrentStage("First");
-                            }))
-                    .setCurrentStage("Second")
+                    .getLayout(RegionLayout.class)
+                    .add(new Container()
+                        .width(new Relative(0.5))
+                        .height(new Relative(0.5))
+                        .getLayout(RegionLayout.class)
+                        .add(new Container()
+                                .height(new Absolute(10))
+                                .backgroundColor(new Absolute(new Color(0., 1., 0.))),
+                                RegionLayout.Region.TOP)
+                        .add(new Container()
+                                .backgroundColor(new Absolute(new Color(1., 0., 0.))),
+                                RegionLayout.Region.BOTTOM)
+                        .getContainer(),
+                        RegionLayout.Region.CENTER)
+
                     .getContainer();
         }
 
-        //GlassLoader.getInstance().getAPI(Sculpt.class).render(container);
+        GlassLoader.getInstance().getAPI(Sculpt.class).render(container);
     }
 
     @SuppressWarnings("unused")

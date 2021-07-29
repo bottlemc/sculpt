@@ -263,12 +263,16 @@ public class Container extends Element {
             appliedElements.add(this.createPseudoConstructor(0, height, width * 16, height));
 
             for(Element.Constructor<?> element : layoutElementData) {
-                if (this.getComponent().isAdjustElements()) {
-                    this.computeChildPaddings(element);
-                    for(int i = 0; i < 3; i++) {
+                element.setWidth(0);
+                element.setHeight(0);
+
+                this.computeChildPaddings(element);
+
+                for (int i = 0; i < 3; i++) {
+                    if (this.getComponent().isAdjustElements()) {
                         this.adjustElementPosition(element, appliedElements);
-                        this.applyElementSizeRequests(renderer, element, appliedElements);
                     }
+                    this.applyElementSizeRequests(renderer, element, appliedElements);
                 }
 
                 this.applyElementPositionRequests(element, appliedElements);
