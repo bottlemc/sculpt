@@ -48,7 +48,7 @@ public class Backend implements IBackend {
     }
 
     @Override
-    public void drawRectangle(double x, double y, double width, double height, double cornerRadius, Color colorIn) {
+    public void drawRectangle(double x, double y, double width, double height, double topLeftCornerRadius, double topRightCornerRadius, double bottomRightCornerRadius, double bottomLeftCornerRadius, Color colorIn) {
         java.awt.Color color = new java.awt.Color((int) (colorIn.getRed() * 255), (int) (colorIn.getGreen() * 255), (int) (colorIn.getBlue() * 255), (int) (colorIn.getAlpha() * 255));
         double xPosition = x - width / 2;
         double yPosition = y - height / 2;
@@ -63,25 +63,25 @@ public class Backend implements IBackend {
                 color.getBlue() / 255.0F,
                 color.getAlpha() / 255.0F);
         bufferBuilder.begin(GL11.GL_POLYGON, VertexFormats.POSITION);
-        bufferBuilder.vertex(xPosition + cornerRadius, yPosition + height, 0).next();
-        bufferBuilder.vertex(xPosition + width - cornerRadius, yPosition + height, 0).next();
+        bufferBuilder.vertex(xPosition + bottomLeftCornerRadius, yPosition + height, 0).next();
+        bufferBuilder.vertex(xPosition + width - bottomRightCornerRadius, yPosition + height, 0).next();
         for (int i = 0; i < 90; i += 3) {
-            bufferBuilder.vertex(xPosition + width - cornerRadius + Math.sin(Math.toRadians(i)) * cornerRadius, yPosition + height - cornerRadius + Math.cos(Math.toRadians(i)) * cornerRadius, 0).next();
+            bufferBuilder.vertex(xPosition + width - bottomRightCornerRadius + Math.sin(Math.toRadians(i)) * bottomRightCornerRadius, yPosition + height - bottomRightCornerRadius + Math.cos(Math.toRadians(i)) * bottomRightCornerRadius, 0).next();
         }
-        bufferBuilder.vertex(xPosition + width, yPosition + height - cornerRadius, 0).next();
-        bufferBuilder.vertex(xPosition + width, yPosition + cornerRadius, 0).next();
+        bufferBuilder.vertex(xPosition + width, yPosition + height - bottomRightCornerRadius, 0).next();
+        bufferBuilder.vertex(xPosition + width, yPosition + topRightCornerRadius, 0).next();
         for (int i = 90; i < 180; i += 3) {
-            bufferBuilder.vertex(xPosition + width - cornerRadius + Math.sin(Math.toRadians(i)) * cornerRadius, yPosition + cornerRadius + Math.cos(Math.toRadians(i)) * cornerRadius, 0).next();
+            bufferBuilder.vertex(xPosition + width - topRightCornerRadius + Math.sin(Math.toRadians(i)) * topRightCornerRadius, yPosition + topRightCornerRadius + Math.cos(Math.toRadians(i)) * topRightCornerRadius, 0).next();
         }
-        bufferBuilder.vertex(xPosition + width - cornerRadius, yPosition, 0).next();
-        bufferBuilder.vertex(xPosition + cornerRadius, yPosition, 0).next();
+        bufferBuilder.vertex(xPosition + width - topRightCornerRadius, yPosition, 0).next();
+        bufferBuilder.vertex(xPosition + topLeftCornerRadius, yPosition, 0).next();
         for (int i = 180; i < 270; i += 3) {
-            bufferBuilder.vertex(xPosition + cornerRadius + Math.sin(Math.toRadians(i)) * cornerRadius, yPosition + cornerRadius + Math.cos(Math.toRadians(i)) * cornerRadius, 0).next();
+            bufferBuilder.vertex(xPosition + topLeftCornerRadius + Math.sin(Math.toRadians(i)) * topLeftCornerRadius, yPosition + topLeftCornerRadius + Math.cos(Math.toRadians(i)) * topLeftCornerRadius, 0).next();
         }
-        bufferBuilder.vertex(xPosition, yPosition + cornerRadius, 0).next();
-        bufferBuilder.vertex(xPosition, yPosition + height - cornerRadius, 0).next();
+        bufferBuilder.vertex(xPosition, yPosition + topLeftCornerRadius, 0).next();
+        bufferBuilder.vertex(xPosition, yPosition + height - bottomLeftCornerRadius, 0).next();
         for (int i = 270; i < 360; i += 3) {
-            bufferBuilder.vertex(xPosition + cornerRadius + Math.sin(Math.toRadians(i)) * cornerRadius, yPosition + height - cornerRadius + Math.cos(Math.toRadians(i)) * cornerRadius, 0).next();
+            bufferBuilder.vertex(xPosition + bottomLeftCornerRadius + Math.sin(Math.toRadians(i)) * bottomLeftCornerRadius, yPosition + height - bottomLeftCornerRadius + Math.cos(Math.toRadians(i)) * bottomLeftCornerRadius, 0).next();
         }
         Tessellator.getInstance().draw();
         GlStateManager.enableTexture();

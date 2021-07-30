@@ -1,9 +1,6 @@
 package com.github.glassmc.sculpt.framework.element;
 
-import com.github.glassmc.sculpt.framework.Color;
-import com.github.glassmc.sculpt.framework.MouseAction;
-import com.github.glassmc.sculpt.framework.Renderer;
-import com.github.glassmc.sculpt.framework.Vector2D;
+import com.github.glassmc.sculpt.framework.*;
 import com.github.glassmc.sculpt.framework.constraint.*;
 import com.github.glassmc.sculpt.framework.layout.Layout;
 import com.github.glassmc.sculpt.framework.layout.RegionLayout;
@@ -33,7 +30,14 @@ public class Container extends Element {
         }
     };
 
-    private Constraint cornerRadius = new Flexible();
+    private final Map<Pair<Direction, Direction>, Constraint> cornerRadius = new HashMap<Pair<Direction, Direction>, Constraint>() {
+        {
+            Direction[] values = Direction.values();
+            for(int i = 0; i < values.length; i++) {
+                put(new Pair<>(values[i], i > values.length - 2 ? values[0] : values[i + 1]), new Flexible());
+            }
+        }
+    };
 
     private boolean adjustElements = true;
 
@@ -116,14 +120,25 @@ public class Container extends Element {
         return height;
     }
 
+    @SuppressWarnings("unused")
     public Container cornerRadius(Constraint cornerRadius) {
-        this.cornerRadius = cornerRadius;
+        Direction[] values = Direction.values();
+        for(int i = 0; i < values.length; i++) {
+            this.cornerRadius.put(new Pair<>(values[i], i > values.length - 2 ? values[0] : values[i + 1]), cornerRadius);
+        }
         cornerRadius.setElement(this);
         return this;
     }
 
-    public Constraint getCornerRadius() {
-        return cornerRadius;
+    @SuppressWarnings("unused")
+    public Container cornerRadius(Pair<Direction, Direction> direction, Constraint cornerRadius) {
+        this.cornerRadius.put(direction, cornerRadius);
+        cornerRadius.setElement(this);
+        return this;
+    }
+
+    public Constraint getCornerRadius(Pair<Direction, Direction> direction) {
+        return cornerRadius.get(direction);
     }
 
     @SuppressWarnings("unused")
@@ -225,7 +240,7 @@ public class Container extends Element {
     public static class Constructor<T extends Container> extends Element.Constructor<T> {
 
         private Color backgroundColor;
-        private double cornerRadius;
+        private double topLeftCornerRadius, topRightCornerRadius, bottomLeftCornerRadius, bottomRightCornerRadius;
 
         private boolean held = false;
 
@@ -235,7 +250,10 @@ public class Container extends Element {
             double width = this.getWidth();
             double height = this.getHeight();
 
-            this.cornerRadius = this.getComponent().getCornerRadius().getConstructor().getCornerRadiusValue(renderer, parentAppliedElements);
+            this.topLeftCornerRadius = this.getComponent().getCornerRadius(new Pair<>(Direction.LEFT, Direction.TOP)).getConstructor().getCornerRadiusValue(renderer, parentAppliedElements);
+            this.topRightCornerRadius = this.getComponent().getCornerRadius(new Pair<>(Direction.TOP, Direction.RIGHT)).getConstructor().getCornerRadiusValue(renderer, parentAppliedElements);
+            this.bottomRightCornerRadius = this.getComponent().getCornerRadius(new Pair<>(Direction.RIGHT, Direction.BOTTOM)).getConstructor().getCornerRadiusValue(renderer, parentAppliedElements);
+            this.bottomLeftCornerRadius = this.getComponent().getCornerRadius(new Pair<>(Direction.BOTTOM, Direction.LEFT)).getConstructor().getCornerRadiusValue(renderer, parentAppliedElements);
 
             this.backgroundColor = this.getComponent().getBackgroundColor().getConstructor().getColorValue(renderer, parentAppliedElements);
 
@@ -255,7 +273,7 @@ public class Container extends Element {
 
             if(container.isBackgroundEnabled()) {
                 Color color = container.getBackgroundColor().getConstructor().getColorValue(renderer, parentAppliedElements);
-                renderer.getBackend().drawRectangle(this.getCalculatedX(), this.getCalculatedY(), width, height, this.cornerRadius, color);
+                renderer.getBackend().drawRectangle(this.getCalculatedX(), this.getCalculatedY(), width, height, this.topLeftCornerRadius, this.topRightCornerRadius, this.bottomRightCornerRadius, this.bottomLeftCornerRadius, color);
             }
 
             Layout layout = container.getLayout();

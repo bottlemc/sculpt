@@ -14,7 +14,7 @@ public interface IBackend {
 
     void preRender();
 
-    void drawRectangle(double x, double y, double width, double height, double cornerRadius, Color color);
+    void drawRectangle(double x, double y, double width, double height, double topLeftCornerRadius, double topRightCornerRadius, double bottomRightCornerRadius, double bottomLeftCornerRadius, Color color);
 
     void drawText(Font font, String text, double x, double y, Color color);
 

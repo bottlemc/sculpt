@@ -18,4 +18,16 @@ public class Pair<T, U> {
         return value;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Pair) {
+            return ((Pair<?, ?>) o).key.equals(this.key) && ((Pair<?, ?>) o).value.equals(this.value);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.key.hashCode() + this.value.hashCode();
+    }
 }

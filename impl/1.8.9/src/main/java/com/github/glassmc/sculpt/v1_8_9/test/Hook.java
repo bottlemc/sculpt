@@ -4,10 +4,12 @@ import com.github.glassmc.loader.GlassLoader;
 import com.github.glassmc.sculpt.Sculpt;
 import com.github.glassmc.sculpt.framework.Color;
 import com.github.glassmc.sculpt.framework.MouseAction;
+import com.github.glassmc.sculpt.framework.Pair;
 import com.github.glassmc.sculpt.framework.Vector2D;
 import com.github.glassmc.sculpt.framework.backend.IBackend;
 import com.github.glassmc.sculpt.framework.constraint.*;
 import com.github.glassmc.sculpt.framework.element.Container;
+import com.github.glassmc.sculpt.framework.element.Element;
 import com.github.glassmc.sculpt.framework.layout.RegionLayout;
 import com.github.glassmc.sculpt.framework.layout.StageLayout;
 import net.minecraft.client.MinecraftClient;
@@ -126,14 +128,15 @@ public class Hook {
                                 .backgroundColor(new Absolute(new Color(0., 1., 0.))),
                                 RegionLayout.Region.TOP)
                         .add(new Container()
-                                .backgroundColor(new Absolute(new Color(1., 0., 0.))),
+                                .backgroundColor(new Absolute(new Color(1., 0., 0.)))
+                                .cornerRadius(new Pair<>(Element.Direction.TOP, Element.Direction.RIGHT), new Absolute(20)),
                                 RegionLayout.Region.BOTTOM)
                         .getContainer(),
                         RegionLayout.Region.CENTER)
                     .getContainer();
         }
 
-        //GlassLoader.getInstance().getAPI(Sculpt.class).render(container);
+        GlassLoader.getInstance().getAPI(Sculpt.class).render(container);
     }
 
     @SuppressWarnings("unused")
