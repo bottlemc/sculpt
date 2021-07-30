@@ -133,7 +133,7 @@ public class Hook {
                     .getContainer();
         }
 
-        GlassLoader.getInstance().getAPI(Sculpt.class).render(container);
+        //GlassLoader.getInstance().getAPI(Sculpt.class).render(container);
     }
 
     @SuppressWarnings("unused")

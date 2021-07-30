@@ -49,7 +49,6 @@ public class Backend implements IBackend {
 
     @Override
     public void drawRectangle(double x, double y, double width, double height, double cornerRadius, Color colorIn) {
-        cornerRadius = 3;
         java.awt.Color color = new java.awt.Color((int) (colorIn.getRed() * 255), (int) (colorIn.getGreen() * 255), (int) (colorIn.getBlue() * 255), (int) (colorIn.getAlpha() * 255));
         double xPosition = x - width / 2;
         double yPosition = y - height / 2;
