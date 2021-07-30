@@ -3,6 +3,7 @@ package com.github.glassmc.sculpt.framework.layout;
 import com.github.glassmc.sculpt.framework.element.Element;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class ListLayout extends Layout {
@@ -38,7 +39,16 @@ public class ListLayout extends Layout {
 
         @Override
         public List<Element.Constructor<?>> getDefaultElements() {
-            List<Element> elements = this.getComponent().getElements();
+            List<Element> elements = new ArrayList<>(this.getComponent().getContainer().getChildren());
+            List<Element> elementList = this.getComponent().getElements();
+
+            elementList.sort(new Comparator<Element>() {
+                @Override
+                public int compare(Element o1, Element o2) {
+                    return Integer.compare(elementList.indexOf(o1), elementList.indexOf(o2));
+                }
+            });
+
             List<Element.Constructor<?>> defaultElements = new ArrayList<>();
             int index = 0;
             for(Element element : elements) {

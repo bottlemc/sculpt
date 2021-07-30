@@ -14,7 +14,7 @@ repositories {
 dependencies {
     api project(':')
     compileOnly minecraft('client', '1.8.9', 'yarn')
-    implementation 'com.github.glassmc.loader:loader:v0.4.0'
+    implementation 'com.github.glassmc.loader:loader:v0.4.2'
 
     api 'org.ow2.asm:asm-tree:9.2'
 }

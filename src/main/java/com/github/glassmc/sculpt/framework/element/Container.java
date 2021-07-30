@@ -84,6 +84,12 @@ public class Container extends Element {
         return this;
     }
 
+    @SuppressWarnings("unused")
+    public Container remove(Element element) {
+        this.children.remove(element);
+        return this;
+    }
+
     public List<Element> getChildren() {
         return this.children;
     }

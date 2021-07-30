@@ -130,7 +130,6 @@ public class Hook {
                                 RegionLayout.Region.BOTTOM)
                         .getContainer(),
                         RegionLayout.Region.CENTER)
-
                     .getContainer();
         }
 

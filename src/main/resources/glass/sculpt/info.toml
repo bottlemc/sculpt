@@ -13,4 +13,4 @@ initialize = [
 
 [environment]
     [environment.has]
-    client = "1.8.9"
+    client = "*"
