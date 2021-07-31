@@ -11,7 +11,6 @@ import com.github.glassmc.sculpt.framework.constraint.*;
 import com.github.glassmc.sculpt.framework.element.Container;
 import com.github.glassmc.sculpt.framework.element.Element;
 import com.github.glassmc.sculpt.framework.layout.RegionLayout;
-import com.github.glassmc.sculpt.framework.layout.StageLayout;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Window;
 import org.lwjgl.input.Mouse;
@@ -128,8 +127,8 @@ public class Hook {
                                 .backgroundColor(new Absolute(new Color(0., 1., 0.))),
                                 RegionLayout.Region.TOP)
                         .add(new Container()
-                                .backgroundColor(new Absolute(new Color(1., 0., 0.)))
-                                .cornerRadius(new Pair<>(Element.Direction.TOP, Element.Direction.RIGHT), new Absolute(20)),
+                                .backgroundImage("sculpt/desktop.png")
+                                .cornerRadius(new Pair<>(Element.Direction.TOP, Element.Direction.RIGHT), new Absolute(3.5)),
                                 RegionLayout.Region.BOTTOM)
                         .getContainer(),
                         RegionLayout.Region.CENTER)

@@ -2,6 +2,7 @@ package com.github.glassmc.sculpt.v1_8_9.test;
 
 import com.github.glassmc.loader.loader.ITransformer;
 import com.github.glassmc.loader.util.Identifier;
+import net.minecraft.client.MinecraftClient;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;

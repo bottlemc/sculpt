@@ -6,6 +6,7 @@ import com.github.glassmc.sculpt.framework.layout.Layout;
 import com.github.glassmc.sculpt.framework.layout.RegionLayout;
 import com.github.glassmc.sculpt.framework.util.Axis;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,8 @@ public class Container extends Element {
 
     private boolean backgroundEnabled = false;
     private Constraint backgroundColor = new Absolute(new Color(1., 1., 1.));
+
+    private String backgroundImage = null;
 
     private Constraint width = new Flexible(), height = new Flexible();
     private final Map<Direction, Constraint> padding = new HashMap<Direction, Constraint>() {
@@ -163,6 +166,16 @@ public class Container extends Element {
         return backgroundColor;
     }
 
+    public Container backgroundImage(String backgroundImage) {
+        this.backgroundImage = backgroundImage;
+        this.backgroundEnabled = true;
+        return this;
+    }
+
+    public String getBackgroundImage() {
+        return backgroundImage;
+    }
+
     @SuppressWarnings("unused")
     public Container padding(Constraint padding) {
         for(Direction direction : Direction.values()) {
@@ -272,8 +285,13 @@ public class Container extends Element {
             }
 
             if(container.isBackgroundEnabled()) {
+                String image = this.getComponent().getBackgroundImage();
                 Color color = container.getBackgroundColor().getConstructor().getColorValue(renderer, parentAppliedElements);
-                renderer.getBackend().drawRectangle(this.getCalculatedX(), this.getCalculatedY(), width, height, this.topLeftCornerRadius, this.topRightCornerRadius, this.bottomRightCornerRadius, this.bottomLeftCornerRadius, color);
+                if(image != null) {
+                    renderer.getBackend().drawImage(this.getCalculatedX(), this.getCalculatedY(), width, height, image, color);
+                } else {
+                    renderer.getBackend().drawRectangle(this.getCalculatedX(), this.getCalculatedY(), width, height, this.topLeftCornerRadius, this.topRightCornerRadius, this.bottomRightCornerRadius, this.bottomLeftCornerRadius, color);
+                }
             }
 
             Layout layout = container.getLayout();
