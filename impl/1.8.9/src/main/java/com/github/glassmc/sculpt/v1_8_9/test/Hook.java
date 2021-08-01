@@ -10,7 +10,9 @@ import com.github.glassmc.sculpt.framework.backend.IBackend;
 import com.github.glassmc.sculpt.framework.constraint.*;
 import com.github.glassmc.sculpt.framework.element.Container;
 import com.github.glassmc.sculpt.framework.element.Element;
+import com.github.glassmc.sculpt.framework.element.Text;
 import com.github.glassmc.sculpt.framework.layout.RegionLayout;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Window;
 import org.lwjgl.input.Mouse;
@@ -124,7 +126,14 @@ public class Hook {
                         .getLayout(RegionLayout.class)
                         .add(new Container()
                                 .height(new Absolute(10))
-                                .backgroundColor(new Absolute(new Color(0., 1., 0.))),
+                                .backgroundColor(new Absolute(new Color(0., 1., 0.)))
+                                .getLayout(RegionLayout.class)
+                                .add(new Text()
+                                        .text("abcedfghijklmopqrstuvwxyz")
+                                        .font(Font.createFont(Font.TRUETYPE_FONT, Hook.class.getClassLoader().getResourceAsStream("Raleway-Bold.ttf")))
+                                        .size(new Relative(0.5, 0, true)),
+                                        RegionLayout.Region.CENTER)
+                                .getContainer(),
                                 RegionLayout.Region.TOP)
                         .add(new Container()
                                 .backgroundImage("sculpt/desktop.png")

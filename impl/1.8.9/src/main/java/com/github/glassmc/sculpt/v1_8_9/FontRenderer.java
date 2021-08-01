@@ -13,7 +13,7 @@ public class FontRenderer {
 
     private final NativeImageBackedTexture texture;
 
-    private final int imgSize = 1024;
+    private final int imgSize = 2048;
 
     public FontRenderer(Font font) {
         font = font.deriveFont(100f);

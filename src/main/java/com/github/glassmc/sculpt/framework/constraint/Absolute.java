@@ -35,6 +35,16 @@ public class Absolute extends Constraint {
         }
 
         @Override
+        public double getXValue(List<Element.Constructor<?>> appliedElements) {
+            return (double) super.getComponent().getValue();
+        }
+
+        @Override
+        public double getYValue(List<Element.Constructor<?>> appliedElements) {
+            return (double) super.getComponent().getValue();
+        }
+
+        @Override
         public double getWidthValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
             return (double) super.getComponent().getValue();
         }
