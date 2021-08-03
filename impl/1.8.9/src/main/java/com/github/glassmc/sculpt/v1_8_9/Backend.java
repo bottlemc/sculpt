@@ -51,6 +51,8 @@ public class Backend implements IBackend {
 
     @Override
     public void drawRectangle(double x, double y, double width, double height, double topLeftCornerRadius, double topRightCornerRadius, double bottomRightCornerRadius, double bottomLeftCornerRadius, Color colorIn) {
+        GL11.glColor4f(1, 1, 1, 1);
+
         java.awt.Color color = new java.awt.Color((int) (colorIn.getRed() * 255), (int) (colorIn.getGreen() * 255), (int) (colorIn.getBlue() * 255), (int) (colorIn.getAlpha() * 255));
         double xPosition = x - width / 2;
         double yPosition = y - height / 2;
@@ -124,7 +126,7 @@ public class Backend implements IBackend {
 
     @Override
     public void drawText(Font font, String text, double x, double y, Color color) {
-        float baseFontSize = 100;
+        float baseFontSize = 25;
 
         String fontName = font.getFontName();
         FontRenderer fontRenderer = fontCache.get(fontName);
@@ -133,7 +135,7 @@ public class Backend implements IBackend {
             fontCache.put(fontName, fontRenderer);
         }
 
-        double scale = font.getSize() / baseFontSize * 4;
+        double scale = font.getSize() / baseFontSize;
 
         TextLayout textLayout = new TextLayout(text, font, new FontRenderContext(null, false, false));
         Rectangle2D bounds = textLayout.getBounds();

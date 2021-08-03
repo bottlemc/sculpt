@@ -1,36 +1,45 @@
 package com.github.glassmc.sculpt.v1_8_9;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.texture.NativeImageBackedTexture;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.util.glu.GLU;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
+import java.io.File;
+import java.io.IOException;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
 
 public class FontRenderer {
 
     private final CharData[] charData = new CharData[256];
 
-    private final NativeImageBackedTexture texture;
+    private final int texture;
 
     private final int imgSize = 2048;
 
     public FontRenderer(Font font) {
-        font = font.deriveFont(100f);
+        font = font.deriveFont(25f);
         this.texture = this.setupTexture(font, this.charData);
     }
 
     public void drawString(String text, double x, double y, Color color) {
         float alpha = (color.getRGB() >> 24 & 0xFF) / 255.0F;
 
-        x *= 4.0;
-        y *= 4.0;
-
         GL11.glPushMatrix();
 
         GL11.glColor4f(1.0F,  1.0F, 1.0F, 1.0F);
 
-        GL11.glScaled(0.25, 0.25, 1);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -40,7 +49,7 @@ public class FontRenderer {
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
 
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.texture.getGlId());
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.texture);
 
         for (int i = 0; i < size; i++) {
             char character = text.charAt(i);
@@ -52,8 +61,34 @@ public class FontRenderer {
         GL11.glPopMatrix();
     }
 
-    protected NativeImageBackedTexture setupTexture(Font font, CharData[] chars) {
-        return new NativeImageBackedTexture(generateFontImage(font, chars));
+    protected int setupTexture(Font font, CharData[] chars) {
+        BufferedImage image = generateFontImage(font, chars);
+        int textureId = GL11.glGenTextures();
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
+
+        int[] pixels = new int[image.getWidth() * image.getHeight()];
+        image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
+
+        ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * 4);
+
+        for(int y = 0; y < image.getHeight(); y++){
+            for(int x = 0; x < image.getWidth(); x++){
+                int pixel = pixels[y * image.getWidth() + x];
+                buffer.put((byte) -1);
+                buffer.put((byte) -1);
+                buffer.put((byte) -1);
+                buffer.put((byte) ((pixel >> 24) & 0xFF));
+            }
+        }
+
+        ((Buffer) buffer).flip();
+
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, image.getWidth(), image.getHeight(), 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer);
+
+        return textureId;
     }
 
     private BufferedImage generateFontImage(Font font, CharData[] chars) {
@@ -99,7 +134,7 @@ public class FontRenderer {
 
             chars[i] = charData;
 
-            g.drawString(String.valueOf(ch), positionX, positionY + charData.height - 45);
+            g.drawString(String.valueOf(ch), positionX, positionY + charData.height - 11);
 
             positionX += charData.width;
         }

@@ -317,7 +317,7 @@ public class Container extends Element {
                     this.applyElementSizeRequests(renderer, element, appliedElements);
                 }
 
-                this.applyElementPositionRequests(element, appliedElements);
+                this.applyElementPositionRequests(renderer, element, appliedElements);
                 appliedElements.add(element);
 
                 element.render(renderer, appliedElements);
@@ -410,17 +410,17 @@ public class Container extends Element {
             element.setHeight(element.getHeight(renderer, appliedElements));
         }
 
-        protected void applyElementPositionRequests(Element.Constructor<?> element, List<Element.Constructor<?>> appliedElements) {
-            this.applyElementXRequest(element, appliedElements);
-            this.applyElementYRequest(element, appliedElements);
+        protected void applyElementPositionRequests(Renderer renderer, Element.Constructor<?> element, List<Element.Constructor<?>> appliedElements) {
+            this.applyElementXRequest(renderer, element, appliedElements);
+            this.applyElementYRequest(renderer, element, appliedElements);
         }
 
-        protected void applyElementXRequest(Element.Constructor<?> element, List<Element.Constructor<?>> appliedElements) {
-            element.setX(element.getXConstraint().getConstructor().getXValue(appliedElements));
+        protected void applyElementXRequest(Renderer renderer, Element.Constructor<?> element, List<Element.Constructor<?>> appliedElements) {
+            element.setX(element.getXConstraint().getConstructor().getXValue(renderer, appliedElements));
         }
 
-        protected void applyElementYRequest(Element.Constructor<?> element, List<Element.Constructor<?>> appliedElements) {
-            element.setY(element.getYConstraint().getConstructor().getYValue(appliedElements));
+        protected void applyElementYRequest(Renderer renderer, Element.Constructor<?> element, List<Element.Constructor<?>> appliedElements) {
+            element.setY(element.getYConstraint().getConstructor().getYValue(renderer, appliedElements));
         }
 
         public Color getBackgroundColor() {

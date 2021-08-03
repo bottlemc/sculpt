@@ -125,7 +125,7 @@ public class Hook {
                         .height(new Relative(0.5))
                         .getLayout(RegionLayout.class)
                         .add(new Container()
-                                .height(new Absolute(10))
+                                .height(new Absolute(30))
                                 .backgroundColor(new Absolute(new Color(0., 1., 0.)))
                                 .getLayout(RegionLayout.class)
                                 .add(new Text()

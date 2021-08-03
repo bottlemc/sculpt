@@ -1,6 +1,7 @@
 package com.github.glassmc.sculpt.framework.constraint;
 
 import com.github.glassmc.sculpt.framework.Pair;
+import com.github.glassmc.sculpt.framework.Renderer;
 import com.github.glassmc.sculpt.framework.element.Element;
 import com.github.glassmc.sculpt.framework.util.Axis;
 
@@ -26,7 +27,7 @@ public class Side extends Constraint {
     public static class Constructor<T extends Side> extends Constraint.Constructor<T> {
 
         @Override
-        public double getXValue(List<Element.Constructor<?>> appliedElements) {
+        public double getXValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
             Direction direction = this.getComponent().getDirection();
 
             Element.Constructor<?> constructor = this.getComponent().getElement().getConstructor();
@@ -46,7 +47,7 @@ public class Side extends Constraint {
         }
 
         @Override
-        public double getYValue(List<Element.Constructor<?>> appliedElements) {
+        public double getYValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
             Direction direction = this.getComponent().getDirection();
 
             Element.Constructor<?> constructor = this.getComponent().getElement().getConstructor();

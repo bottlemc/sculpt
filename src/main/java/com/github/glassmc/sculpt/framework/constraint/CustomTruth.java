@@ -55,7 +55,7 @@ public class CustomTruth extends Constraint {
 
         private long previousUpdate;
 
-        protected void update(Renderer renderer) {
+        protected void update() {
             long previousUpdateDelta = System.currentTimeMillis() - previousUpdate;
 
             if(previousUpdate != 0) {
@@ -73,15 +73,34 @@ public class CustomTruth extends Constraint {
 
         @Override
         public Color getColorValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
-            this.update(renderer);
-
+            this.update();
             double percent = (double) timeCache / this.getComponent().getTime();
             return Color.getBetween(percent, (Color) this.getComponent().getData()[0], (Color) this.getComponent().getData()[1]);
         }
 
         @Override
+        public double getXValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
+            this.update();
+            Object[] data = this.getComponent().getData();
+            double initialX = ((Constraint) data[0]).getConstructor().getXValue(renderer, appliedElements);
+            double finalX = ((Constraint) data[1]).getConstructor().getXValue(renderer, appliedElements);
+            double percent = (double) timeCache / this.getComponent().getTime();
+            return (finalX - initialX) * percent + initialX;
+        }
+
+        @Override
+        public double getYValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
+            this.update();
+            Object[] data = this.getComponent().getData();
+            double initialY = ((Constraint) data[0]).getConstructor().getYValue(renderer, appliedElements);
+            double finalY = ((Constraint) data[1]).getConstructor().getYValue(renderer, appliedElements);
+            double percent = (double) timeCache / this.getComponent().getTime();
+            return (finalY - initialY) * percent + initialY;
+        }
+
+        @Override
         public double getWidthValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
-            this.update(renderer);
+            this.update();
             Object[] data = this.getComponent().getData();
             double initialWidth = ((Constraint) data[0]).getConstructor().getWidthValue(renderer, appliedElements);
             double finalWidth = ((Constraint) data[1]).getConstructor().getWidthValue(renderer, appliedElements);
@@ -91,7 +110,7 @@ public class CustomTruth extends Constraint {
 
         @Override
         public double getHeightValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
-            this.update(renderer);
+            this.update();
             Object[] data = this.getComponent().getData();
             double initialHeight = ((Constraint) data[0]).getConstructor().getHeightValue(renderer, appliedElements);
             double finalHeight = ((Constraint) data[1]).getConstructor().getHeightValue(renderer, appliedElements);

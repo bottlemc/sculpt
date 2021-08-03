@@ -34,11 +34,11 @@ public abstract class Constraint extends Component {
             return 0;
         }
 
-        public double getXValue(List<Element.Constructor<?>> appliedElements) {
+        public double getXValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
             return this.getComponent().getElement().getConstructor().getX();
         }
 
-        public double getYValue(List<Element.Constructor<?>> appliedElements) {
+        public double getYValue(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
             return this.getComponent().getElement().getConstructor().getY();
         }
         
