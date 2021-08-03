@@ -138,15 +138,13 @@ public class Backend implements IBackend {
         double scale = font.getSize() / baseFontSize;
 
         TextLayout textLayout = new TextLayout(text, font, new FontRenderContext(null, false, false));
+        Canvas canvas = new Canvas();
+        FontMetrics fontMetrics = canvas.getFontMetrics(font);
         Rectangle2D bounds = textLayout.getBounds();
         double scaledWidth = bounds.getWidth();
-        double scaledHeight = bounds.getHeight();
+        double scaledHeight = textLayout.getAscent();
 
         GL11.glPushMatrix();
-
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
 
         GL11.glTranslated(x - scaledWidth / 2, y - scaledHeight / 2, 0);
         GL11.glScaled(scale, scale, 1);

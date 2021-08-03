@@ -121,7 +121,7 @@ public class FontRenderer {
 
             if (positionX + charData.width >= imgSize) {
                 positionX = 0;
-                positionY += charHeight + 30;
+                positionY += charHeight + 10;
                 charHeight = 0;
             }
 
@@ -134,9 +134,9 @@ public class FontRenderer {
 
             chars[i] = charData;
 
-            g.drawString(String.valueOf(ch), positionX, positionY + charData.height - 11);
+            g.drawString(String.valueOf(ch), positionX, positionY + fontMetrics.getAscent());
 
-            positionX += charData.width;
+            positionX += charData.width + 10;
         }
 
         return bufferedImage;

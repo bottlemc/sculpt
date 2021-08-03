@@ -125,6 +125,10 @@ public class Text extends Element {
         public void render(Renderer renderer, List<Element.Constructor<?>> appliedElements) {
             Text textElement = this.getComponent();
             Color color = textElement.getColor().getConstructor().getColorValue(renderer, appliedElements);
+
+            Font font = textElement.getFont().deriveFont((float) this.getFontSize(renderer, appliedElements));
+            Rectangle2D rect = font.getStringBounds(textElement.getText(), new FontRenderContext(null, false, false));
+
             renderer.getBackend().drawText(textElement.getFont().deriveFont((float) this.getFontSize(renderer, appliedElements)), textElement.getText(), this.getCalculatedX(), this.getCalculatedY(), color);
         }
 
