@@ -137,14 +137,17 @@ public class Hook {
                                 RegionLayout.Region.TOP)
                         .add(new Container()
                                 .backgroundImage("sculpt/desktop.png")
-                                .cornerRadius(new Pair<>(Element.Direction.TOP, Element.Direction.RIGHT), new Absolute(3.5)),
+                                .cornerRadius(new Pair<>(Element.Direction.TOP, Element.Direction.RIGHT), new Absolute(3.5))
+                                .onClick(container1 -> {
+                                    System.out.println("Test");
+                                }),
                                 RegionLayout.Region.BOTTOM)
                         .getContainer(),
                         RegionLayout.Region.CENTER)
                     .getContainer();
         }
 
-        //GlassLoader.getInstance().getAPI(Sculpt.class).render(container);
+        GlassLoader.getInstance().getAPI(Sculpt.class).render(container);
     }
 
     @SuppressWarnings("unused")
