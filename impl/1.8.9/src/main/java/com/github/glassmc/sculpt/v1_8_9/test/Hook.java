@@ -1,12 +1,14 @@
 package com.github.glassmc.sculpt.v1_8_9.test;
 
 import com.github.glassmc.loader.GlassLoader;
+import com.github.glassmc.sculpt.KeyAction;
 import com.github.glassmc.sculpt.Sculpt;
 import com.github.glassmc.sculpt.framework.Color;
 import com.github.glassmc.sculpt.framework.MouseAction;
 import com.github.glassmc.sculpt.framework.Pair;
 import com.github.glassmc.sculpt.framework.Vector2D;
 import com.github.glassmc.sculpt.framework.backend.IBackend;
+import com.github.glassmc.sculpt.framework.backend.Key;
 import com.github.glassmc.sculpt.framework.constraint.*;
 import com.github.glassmc.sculpt.framework.element.Container;
 import com.github.glassmc.sculpt.framework.element.Element;
@@ -15,6 +17,7 @@ import com.github.glassmc.sculpt.framework.layout.RegionLayout;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Window;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 
@@ -138,8 +141,11 @@ public class Hook {
                         .add(new Container()
                                 .backgroundImage("sculpt/desktop.png")
                                 .cornerRadius(new Pair<>(Element.Direction.TOP, Element.Direction.RIGHT), new Absolute(3.5))
-                                .onClick(container1 -> {
+                                .onClick(interact -> {
                                     System.out.println("Test");
+                                })
+                                .onPress(interact -> {
+                                    System.out.println(interact.getCharacter());
                                 }),
                                 RegionLayout.Region.BOTTOM)
                         .getContainer(),
@@ -147,7 +153,7 @@ public class Hook {
                     .getContainer();
         }
 
-        //GlassLoader.getInstance().getAPI(Sculpt.class).render(container);
+        GlassLoader.getInstance().getAPI(Sculpt.class).render(container);
     }
 
     @SuppressWarnings("unused")
@@ -158,6 +164,21 @@ public class Hook {
             double mouseY = window.getScaledHeight() - ((double) Mouse.getY() / Display.getHeight() * window.getScaledHeight());
             GlassLoader.getInstance().getInterface(IBackend.class).getMouseActions().add(new MouseAction(Mouse.getEventButtonState() ? MouseAction.Type.CLICK : MouseAction.Type.RELEASE, new Vector2D(mouseX, mouseY)));
         }
+    }
+
+    @SuppressWarnings("unused")
+    public static void onKey() {
+        if(Keyboard.getEventKeyState()) {
+            GlassLoader.getInstance().getInterface(IBackend.class).getKeyActions().add(new KeyAction(getKey(Keyboard.getEventKey()), Keyboard.getEventCharacter()));
+        }
+    }
+
+    private static Key getKey(int keycode) {
+        switch (keycode) {
+            case Keyboard.KEY_ESCAPE:
+                return Key.ESCAPE;
+        }
+        return null;
     }
 
     private static class ServerData {

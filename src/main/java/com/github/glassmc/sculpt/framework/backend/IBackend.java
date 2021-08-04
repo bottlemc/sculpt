@@ -1,5 +1,6 @@
 package com.github.glassmc.sculpt.framework.backend;
 
+import com.github.glassmc.sculpt.KeyAction;
 import com.github.glassmc.sculpt.framework.Color;
 import com.github.glassmc.sculpt.framework.MouseAction;
 import com.github.glassmc.sculpt.framework.Vector2D;
@@ -25,4 +26,6 @@ public interface IBackend {
     boolean isMouseDown(Button button);
 
     List<MouseAction> getMouseActions();
+
+    List<KeyAction> getKeyActions();
 }

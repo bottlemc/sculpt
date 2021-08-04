@@ -1,5 +1,6 @@
 package com.github.glassmc.sculpt.v1_8_9;
 
+import com.github.glassmc.sculpt.KeyAction;
 import com.github.glassmc.sculpt.framework.Color;
 import com.github.glassmc.sculpt.framework.MouseAction;
 import com.github.glassmc.sculpt.framework.Vector2D;
@@ -20,7 +21,6 @@ import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.Rectangle2D;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +30,8 @@ public class Backend implements IBackend {
 
     private final Map<String, FontRenderer> fontCache = new HashMap<>();
 
-    private List<MouseAction> mouseActions = new ArrayList<>();
+    private final List<MouseAction> mouseActions = new ArrayList<>();
+    private final List<KeyAction> keyActions = new ArrayList<>();
 
     @Override
     public Vector2D getLocation() {
@@ -157,6 +158,7 @@ public class Backend implements IBackend {
     @Override
     public void postRender() {
         this.mouseActions.clear();
+        this.keyActions.clear();
     }
 
     @Override
@@ -184,6 +186,11 @@ public class Backend implements IBackend {
     @Override
     public List<MouseAction> getMouseActions() {
         return mouseActions;
+    }
+
+    @Override
+    public List<KeyAction> getKeyActions() {
+        return keyActions;
     }
 
 }

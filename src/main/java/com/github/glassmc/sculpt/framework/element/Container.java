@@ -1,12 +1,14 @@
 package com.github.glassmc.sculpt.framework.element;
 
+import com.github.glassmc.sculpt.KeyAction;
 import com.github.glassmc.sculpt.framework.*;
 import com.github.glassmc.sculpt.framework.constraint.*;
 import com.github.glassmc.sculpt.framework.layout.Layout;
 import com.github.glassmc.sculpt.framework.layout.RegionLayout;
 import com.github.glassmc.sculpt.framework.util.Axis;
+import com.github.glassmc.sculpt.framework.util.KeyInteract;
+import com.github.glassmc.sculpt.framework.util.MouseInteract;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,8 +48,10 @@ public class Container extends Element {
 
     private final List<Element> children = new ArrayList<>();
 
-    private Consumer<Container> onClick;
+    private Consumer<MouseInteract<Container>> onClick;
     private Consumer<Container> onRelease;
+
+    private Consumer<KeyInteract<Container>> onPress;
 
     public Container() {
         this.possibleConstructors.add(new Constructor<>());
@@ -222,12 +226,12 @@ public class Container extends Element {
         return layoutClass.cast(this.layout);
     }
 
-    public Container onClick(Consumer<Container> onClick) {
+    public Container onClick(Consumer<MouseInteract<Container>> onClick) {
         this.onClick = onClick;
         return this;
     }
 
-    public Consumer<Container> getOnClick() {
+    public Consumer<MouseInteract<Container>> getOnClick() {
         return onClick;
     }
 
@@ -238,6 +242,15 @@ public class Container extends Element {
 
     public Consumer<Container> getOnRelease() {
         return onRelease;
+    }
+
+    public Container onPress(Consumer<KeyInteract<Container>> onPress) {
+        this.onPress = onPress;
+        return this;
+    }
+
+    public Consumer<KeyInteract<Container>> getOnPress() {
+        return onPress;
     }
 
     public Container apply(Consumer<Container> consumer) {
@@ -255,7 +268,7 @@ public class Container extends Element {
         private Color backgroundColor;
         private double topLeftCornerRadius, topRightCornerRadius, bottomLeftCornerRadius, bottomRightCornerRadius;
 
-        private boolean held = false;
+        private boolean selected = false;
 
         @Override
         public void render(Renderer renderer, List<Element.Constructor<?>> parentAppliedElements) {
@@ -270,17 +283,31 @@ public class Container extends Element {
 
             this.backgroundColor = this.getComponent().getBackgroundColor().getConstructor().getColorValue(renderer, parentAppliedElements);
 
-            for(MouseAction action : renderer.getBackend().getMouseActions()) {
-                if(action.getType() == MouseAction.Type.CLICK && this.isOnTop(action.getLocation(), this)) {
-                    if(container.getOnClick() != null) {
-                        container.getOnClick().accept(this.getComponent());
+            for (MouseAction action : renderer.getBackend().getMouseActions()) {
+                if (action.getType() == MouseAction.Type.CLICK) {
+                    if (this.isOnTop(action.getLocation(), this)) {
+                        if (container.getOnClick() != null) {
+                            double x = (action.getLocation().getFirst() - this.getCalculatedX() - this.getWidth() / 2) / this.getWidth();
+                            double y = (action.getLocation().getSecond() - this.getCalculatedY() - this.getHeight() / 2) / this.getHeight();
+                            container.getOnClick().accept(new MouseInteract<>(this.getComponent(), x, y));
+                        }
+                        this.selected = true;
+                    } else {
+                        this.selected = false;
                     }
-                    this.held = true;
-                } else if(action.getType() == MouseAction.Type.RELEASE) {
-                    if(container.getOnRelease() != null) {
+
+                } else if (action.getType() == MouseAction.Type.RELEASE) {
+                    if (container.getOnRelease() != null) {
                         container.getOnRelease().accept(this.getComponent());
                     }
-                    this.held = false;
+                }
+            }
+
+            if (this.selected) {
+                for (KeyAction action : renderer.getBackend().getKeyActions()) {
+                    if (container.getOnPress() != null) {
+                        container.getOnPress().accept(new KeyInteract<>(this.getComponent(), action.getCharacter()));
+                    }
                 }
             }
 

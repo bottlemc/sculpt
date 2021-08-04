@@ -39,17 +39,27 @@ public class SculptTransformer implements ITransformer {
 
     private void transformMinecraftClient(ClassNode classNode) {
         Identifier tick = Identifier.parse("net/minecraft/client/MinecraftClient#tick()V");
-        String renderName = tick.getMethodName();
-        String renderDescription = tick.getMethodDesc();
+        String tickName = tick.getMethodName();
+        String tickDescription = tick.getMethodDesc();
 
         for(MethodNode methodNode : classNode.methods) {
-            if(methodNode.name.equals(renderName) && methodNode.desc.equals(renderDescription)) {
+            if(methodNode.name.equals(tickName) && methodNode.desc.equals(tickDescription)) {
                 for(AbstractInsnNode node : methodNode.instructions.toArray()) {
                     if(node instanceof MethodInsnNode && ((MethodInsnNode) node).name.equals("getEventButton")) {
                         MethodInsnNode insert = new MethodInsnNode(Opcodes.INVOKESTATIC, Hook.class.getName().replace(".", "/"), "onAction", "()V");
                         methodNode.instructions.insertBefore(node, insert);
                     }
                 }
+            }
+        }
+
+        Identifier handleKeyInput = Identifier.parse("net/minecraft/client/MinecraftClient#handleKeyInput()V");
+        String handleKeyInputName = handleKeyInput.getMethodName();
+        String handleKeyInputDescription = handleKeyInput.getMethodDesc();
+
+        for(MethodNode methodNode : classNode.methods) {
+            if(methodNode.name.equals(handleKeyInputName) && methodNode.desc.equals(handleKeyInputDescription)) {
+                methodNode.instructions.insert(new MethodInsnNode(Opcodes.INVOKESTATIC, Hook.class.getName().replace(".", "/"), "onKey", "()V"));
             }
         }
     }
