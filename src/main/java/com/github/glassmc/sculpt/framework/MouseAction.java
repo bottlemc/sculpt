@@ -20,6 +20,7 @@ public class MouseAction {
 
     public enum Type {
         CLICK,
+        DRAG,
         RELEASE
     }
 

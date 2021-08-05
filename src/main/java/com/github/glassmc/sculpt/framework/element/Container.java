@@ -49,6 +49,7 @@ public class Container extends Element {
     private final List<Element> children = new ArrayList<>();
 
     private Consumer<MouseInteract<Container>> onClick;
+    private Consumer<MouseInteract<Container>> onDrag;
     private Consumer<Container> onRelease;
 
     private Consumer<KeyInteract<Container>> onPress;
@@ -235,6 +236,15 @@ public class Container extends Element {
         return onClick;
     }
 
+    public Container onDrag(Consumer<MouseInteract<Container>> onDrag) {
+        this.onDrag = onDrag;
+        return this;
+    }
+
+    public Consumer<MouseInteract<Container>> getOnDrag() {
+        return onDrag;
+    }
+
     public Container onRelease(Consumer<Container> onRelease) {
         this.onRelease = onRelease;
         return this;
@@ -269,6 +279,7 @@ public class Container extends Element {
         private double topLeftCornerRadius, topRightCornerRadius, bottomLeftCornerRadius, bottomRightCornerRadius;
 
         private boolean selected = false;
+        private boolean held = false;
 
         @Override
         public void render(Renderer renderer, List<Element.Constructor<?>> parentAppliedElements) {
@@ -287,19 +298,28 @@ public class Container extends Element {
                 if (action.getType() == MouseAction.Type.CLICK) {
                     if (this.isOnTop(action.getLocation(), this)) {
                         if (container.getOnClick() != null) {
-                            double x = (action.getLocation().getFirst() - this.getCalculatedX() - this.getWidth() / 2) / this.getWidth();
-                            double y = (action.getLocation().getSecond() - this.getCalculatedY() - this.getHeight() / 2) / this.getHeight();
+                            double x = (action.getLocation().getFirst() - (this.getCalculatedX() - this.getWidth() / 2)) / this.getWidth();
+                            double y = (action.getLocation().getSecond() - (this.getCalculatedY() - this.getHeight() / 2)) / this.getHeight();
                             container.getOnClick().accept(new MouseInteract<>(this.getComponent(), x, y));
                         }
                         this.selected = true;
                     } else {
                         this.selected = false;
                     }
-
-                } else if (action.getType() == MouseAction.Type.RELEASE) {
+                    this.held = true;
+                } else if (action.getType() == MouseAction.Type.DRAG) {
+                    if (this.held) {
+                        if (container.getOnDrag() != null) {
+                            double x = (action.getLocation().getFirst() - (this.getCalculatedX() - this.getWidth() / 2)) / this.getWidth();
+                            double y = (action.getLocation().getSecond() - (this.getCalculatedY() - this.getHeight() / 2)) / this.getHeight();
+                            container.getOnDrag().accept(new MouseInteract<>(this.getComponent(), x, y));
+                        }
+                    }
+                } else if (action.getType() == MouseAction.Type.RELEASE && this.held) {
                     if (container.getOnRelease() != null) {
                         container.getOnRelease().accept(this.getComponent());
                     }
+                    this.held = false;
                 }
             }
 

@@ -153,16 +153,22 @@ public class Hook {
                     .getContainer();
         }
 
-        GlassLoader.getInstance().getAPI(Sculpt.class).render(container);
+        //GlassLoader.getInstance().getAPI(Sculpt.class).render(container);
     }
+
+    private static boolean pressing = false;
 
     @SuppressWarnings("unused")
     public static void onAction() {
-        if(Mouse.getEventButton() != -1) {
+        if (Mouse.getEventButton() != -1 || pressing) {
             Window window = new Window(MinecraftClient.getInstance());
             double mouseX = (double) Mouse.getX() / Display.getWidth() * window.getScaledWidth();
             double mouseY = window.getScaledHeight() - ((double) Mouse.getY() / Display.getHeight() * window.getScaledHeight());
-            GlassLoader.getInstance().getInterface(IBackend.class).getMouseActions().add(new MouseAction(Mouse.getEventButtonState() ? MouseAction.Type.CLICK : MouseAction.Type.RELEASE, new Vector2D(mouseX, mouseY)));
+            GlassLoader.getInstance().getInterface(IBackend.class).getMouseActions().add(new MouseAction(Mouse.getEventButtonState() ? MouseAction.Type.CLICK : pressing ? MouseAction.Type.DRAG : MouseAction.Type.RELEASE, new Vector2D(mouseX, mouseY)));
+
+            if (Mouse.getEventButton() != -1) {
+                pressing = Mouse.getEventButtonState();
+            }
         }
     }
 
